@@ -11,38 +11,38 @@ tod = datetime.datetime.today()
 
 ia = imdb.IMDb()
 
-# watchseries = [
-# 	"Attack on Titan",
-# 	"Better Call Saul",
-# 	"Black Mirror",
-# 	"Brooklyn Nine-Nine",
-# 	"Killing Eve",
-# 	"Lucifer",
-# 	"One Punch Man",
-# 	"Star Trek: Picard",
-# 	"Stranger Things",
-# 	"The Blacklist",
-# 	"The Boys",
-# 	"The Expanse",
-# 	"The Good Doctor",
-# 	"The Grand Tour (2016)",
-# 	"The Mandalorian",
-# 	"The Orville",
-# 	"The Outsider (2020)",
-# 	"The Witcher",
-# 	"True Detective",
-# 	"Westworld",
-# ]
-
 watchseries = [
+	"Attack on Titan",
+	"Better Call Saul",
+	"Black Mirror",
 	"Brooklyn Nine-Nine",
+	"Killing Eve",
+	"Lucifer",
+	"One Punch Man",
+	"Star Trek: Picard",
+	"Stranger Things",
 	"The Blacklist",
+	"The Boys",
+	"The Expanse",
+	"The Good Doctor",
+	"The Grand Tour (2016)",
+	"The Mandalorian",
+	"The Orville",
+	"The Outsider (2020)",
+	"The Witcher",
+	"True Detective",
+	"Westworld",
+]
+
+# watchseries = [
+# 	"Brooklyn Nine-Nine",
+# 	"The Blacklist",
 # 	"Better Call Saul",
 # 	# "Westworld",
 # 	"Star Trek: Picard",
 # 	# "Attack on Titan",
 # 	# "Killing Eve",
-]
+# ]
 
 seriesdict = dict()
 
@@ -85,7 +85,6 @@ if not os.path.isfile("data_file.json"):
 								episodeid = serieid['episodes'][s][e].movieID
 								seriesdict[serieid['title']][sstring][estring] = {}
 								countrydate = dict()
-								print("ia.get_movie_release_dates(episodeid)", ia.get_movie_release_dates(episodeid))
 								if ia.get_movie_release_dates(episodeid)['data']:
 									for reldate in ia.get_movie_release_dates(episodeid)['data']['raw release dates']:
 											dates = list(reversed(reldate["date"].split()))
