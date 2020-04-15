@@ -35,7 +35,7 @@ watchseries = [
 ]
 
 # watchseries = [
-# 	"Brooklyn Nine-Nine",
+#   "Brooklyn Nine-Nine",
 # 	"The Blacklist",
 # 	"Better Call Saul",
 # 	# "Westworld",
@@ -46,16 +46,6 @@ watchseries = [
 
 seriesdict = dict()
 
-# series = 	{"Better Call Saul":
-#               {"S1":
-#                 {"E1":{"Pavadinimas":
-#                          {"Salis": "2014-05-50"}
-#                 },
-#                 {"E2":{"Pavadinimas":
-#                          {"Salis": "2014-05-50"}
-#                 },
-#               }
-#              }
 if not os.path.isfile("data_file.json"):
 	try:
 		for tv in watchseries:

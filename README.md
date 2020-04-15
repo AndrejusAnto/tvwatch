@@ -4,6 +4,7 @@ Linux: naudojimui geriausia naudoti Anaconda (https://www.anaconda.com/distribut
 
 Kai jau turit conda:
 conda create -n (jūsų env pavadinimas) python=3.8
+
 conda activate (jūsų env pavadinimas)
 
 ir tada:
