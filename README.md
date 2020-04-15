@@ -3,6 +3,7 @@ Python'o script'as, kuris jama serialų info iš IMDB ir pateikia sąrašą seri
 Linux: naudojimui geriausia naudoti Anaconda (https://www.anaconda.com/distribution/). Jei nenorit daug nereikalingų package'ų, naudokit miniconda (https://docs.conda.io/en/latest/miniconda.html) ir tada naudojant conda env bus suinstaliuota minimalus package'ų kiekis.
 
 Kai jau turit conda:
+
 conda create -n (jūsų env pavadinimas) python=3.8
 
 conda activate (jūsų env pavadinimas)
