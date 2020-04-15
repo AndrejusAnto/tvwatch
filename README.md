@@ -12,4 +12,4 @@ ir tada:
 pip install IMDbPY
 * pip install, nes nors conda ir turi daug package'ų, bet neturi normalios IMDbPY versijos, todėl reikia instaliuot per pip
 
-Galiausiai per terminalą: python series.py. Bus sukurtas json failas, kur bus išsaugomi duomenys ir tada atprint'a terminale.
+Galiausiai per terminalą: python series.py. Bus sukurtas json failas, kur bus išsaugomi duomenys ir tada informacija bus atprint'a terminale.
