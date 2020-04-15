@@ -8,9 +8,8 @@ import calendar
 import os
 
 tod = datetime.datetime.today()
-
 ia = imdb.IMDb()
-
+    
 watchseries = [
 	"Attack on Titan",
 	"Better Call Saul",
