@@ -9,7 +9,7 @@ import os
 
 tod = datetime.datetime.today()
 ia = imdb.IMDb()
-    
+
 watchseries = [
 	"Attack on Titan",
 	"Better Call Saul",
@@ -32,16 +32,6 @@ watchseries = [
 	"True Detective",
 	"Westworld",
 ]
-
-# watchseries = [
-#   "Brooklyn Nine-Nine",
-# 	"The Blacklist",
-# 	"Better Call Saul",
-# 	# "Westworld",
-# 	"Star Trek: Picard",
-# 	# "Attack on Titan",
-# 	# "Killing Eve",
-# ]
 
 seriesdict = dict()
 
