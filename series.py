@@ -94,10 +94,10 @@ for sp in data.items():
 				for sd in p[1].items():
 					a = sd[1].split()
 					if len(a) == 3:
-						me = int(a[0])
+						met = int(a[0])
 						men = list(calendar.month_name).index(a[1])
 						die = int(a[2])
-						if (me >= tod.year):
+						if (met >= tod.year):
 							if (men == tod.month) and (die >= tod.day):
 								ldatos.append(sd)
 							elif (men > tod.month):
