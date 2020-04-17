@@ -11,24 +11,24 @@ tod = datetime.datetime.today()
 ia = imdb.IMDb()
 
 watchseries = [
-	"Attack on Titan",
-	"Better Call Saul",
-	"Black Mirror",
-	"Brooklyn Nine-Nine",
-	"Killing Eve",
-	"Lucifer",
-	"One Punch Man",
-	"Star Trek: Picard",
-	"Stranger Things",
-	"The Blacklist",
-	"The Boys",
-	"The Expanse",
-	"The Good Doctor",
-	"The Grand Tour",
-	"The Mandalorian",
-	"The Orville",
-	"The Outsider",
-	"The Witcher",
+	# "Attack on Titan",
+	# "Better Call Saul",
+	# "Black Mirror",
+	# "Brooklyn Nine-Nine",
+	# "Killing Eve",
+	# "Lucifer",
+	# "One Punch Man",
+	# "Star Trek: Picard",
+	# "Stranger Things",
+	# "The Blacklist",
+	# "The Boys",
+	# "The Expanse",
+	# "The Good Doctor",
+	# "The Grand Tour",
+	# "The Mandalorian",
+	# "The Orville",
+	# "The Outsider",
+	# "The Witcher",
 	"True Detective",
 	"Westworld",
 ]
@@ -70,7 +70,8 @@ if not os.path.isfile("data_file.json"):
 											sdates = " ".join(dates)
 											countryname = reldate['country'].rstrip("\n")
 											countrydate[countryname] = sdates
-									seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = countrydate
+											sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
+									seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = sortedcd
 				else:
 					continue
 	except KeyError:
@@ -78,6 +79,7 @@ if not os.path.isfile("data_file.json"):
 
 	with open("data_file.json", "w") as write_file:
 		json.dump(seriesdict, write_file, ensure_ascii=False, indent=4)
+
 
 with open("data_file.json", "r") as read_file:
 	data = json.load(read_file)
