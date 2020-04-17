@@ -11,23 +11,23 @@ tod = datetime.datetime.today()
 ia = imdb.IMDb()
 
 watchseries = [
-	# "Attack on Titan",
-	# "Better Call Saul",
-	# "Black Mirror",
-	# "Brooklyn Nine-Nine",
-	# "Killing Eve",
-	# "Lucifer",
-	# "One Punch Man",
-	# "Star Trek: Picard",
-	# "Stranger Things",
-	# "The Blacklist",
-	# "The Boys",
-	# "The Expanse",
-	# "The Good Doctor",
-	# "The Grand Tour",
-	# "The Mandalorian",
-	# "The Orville",
-	# "The Outsider",
+	"Attack on Titan",
+	"Better Call Saul",
+	"Black Mirror",
+	"Brooklyn Nine-Nine",
+	"Killing Eve",
+	"Lucifer",
+	"One Punch Man",
+	"Star Trek: Picard",
+	"Stranger Things",
+	"The Blacklist",
+	"The Boys",
+	"The Expanse",
+	"The Good Doctor",
+	"The Grand Tour",
+	"The Mandalorian",
+	"The Orville",
+	"The Outsider",
 	"The Witcher",
 	"True Detective",
 	"Westworld",
@@ -91,13 +91,9 @@ for sp in data.items():
 			for p in e[1].items():
 				lepinfo = list()
 				ldatos = list()
-				print("p", p)
 				for sd in p[1].items():
-					# print(sd)
 					a = sd[1].split()
 					if len(a) == 3:
-						# print("p1", p[1])
-						# print("sp0", sp[1])
 						met = int(a[0])
 						men = list(calendar.month_name).index(a[1])
 						die = int(a[2])
@@ -114,20 +110,18 @@ for sp in data.items():
 					lepinfo = [s[0], e[0], p[0]]
 					lepinfo.append(ldatos)
 					lepdict[sp[0]].append(lepinfo)
-	duomenys.append(lepdict)
+	if lepdict[sp[0]]:
+		duomenys.append(lepdict)
 
-print("duomenys", duomenys)
+# print("duomenys", duomenys)
 for i in duomenys:
 	for k, v in i.items():
-		if v:
+		print('---------------------------------------------')
+		print('---------------------------------------------')
+		print(tod.strftime("%Y %B %d"))
+		print(f'Serialas "{k}"')
+		for j in v:
 			print('---------------------------------------------')
-			print('---------------------------------------------')
-			print(tod.strftime("%Y %B %d"))
-			print(f'Serialas "{k}"')
-			for j in v:
-				print('---------------------------------------------')
-				print(f'****** {j[0]} {j[1]} "{j[2]}"')
-				for d in j[-1]:
-					print(f'****** {" ".join(d)}')
-
-
+			print(f'****** {j[0]} {j[1]} "{j[2]}"')
+			for d in j[-1]:
+				print(f'****** {" ".join(d)}')
