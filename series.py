@@ -24,10 +24,10 @@ watchseries = [
 	"The Boys",
 	"The Expanse",
 	"The Good Doctor",
-	"The Grand Tour (2016)",
+	"The Grand Tour",
 	"The Mandalorian",
 	"The Orville",
-	"The Outsider (2020)",
+	"The Outsider",
 	"The Witcher",
 	"True Detective",
 	"Westworld",
@@ -124,3 +124,5 @@ for i in duomenys:
 			print(f'****** {j[0]} {j[1]} "{j[2]}"')
 			for d in j[-1]:
 				print(f'****** {" ".join(d)}')
+
+
