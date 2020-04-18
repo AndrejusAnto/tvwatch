@@ -2,12 +2,12 @@
 # coding: utf-8
 
 import imdb
-import datetime
+from datetime import datetime
 import json
 import calendar
 import os
 
-tod = datetime.datetime.today()
+tod = datetime.today()
 ia = imdb.IMDb()
 
 watchseries = [
@@ -30,7 +30,7 @@ watchseries = [
 	# "The Outsider",
 	# "The Witcher",
 	"True Detective",
-	"Westworld",
+	# "Westworld",
 ]
 
 seriesdict = dict()
@@ -70,12 +70,15 @@ if not os.path.isfile("data_file.json"):
 											sdates = " ".join(dates)
 											countryname = reldate['country'].rstrip("\n")
 											countrydate[countryname] = sdates
-											sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
+											sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y %B %d")))
 									seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = sortedcd
+									print("sortedcd", sortedcd)
 				else:
 					continue
 	except KeyError:
 		pass
+
+	# print(seriesdict)
 
 	with open("data_file.json", "w") as write_file:
 		json.dump(seriesdict, write_file, ensure_ascii=False, indent=4)
@@ -84,6 +87,7 @@ if not os.path.isfile("data_file.json"):
 with open("data_file.json", "r") as read_file:
 	data = json.load(read_file)
 
+# print(data)
 duomenys = list()
 for sp in data.items():
 	lepdict = dict()
@@ -94,6 +98,7 @@ for sp in data.items():
 				lepinfo = list()
 				ldatos = list()
 				for sd in p[1].items():
+					# print(sd)
 					a = sd[1].split()
 					if len(a) == 3:
 						met = int(a[0])
