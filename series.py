@@ -30,7 +30,7 @@ watchseries = [
 	# "The Outsider",
 	# "The Witcher",
 	"True Detective",
-	# "Westworld",
+	"Westworld",
 ]
 
 seriesdict = dict()
@@ -66,13 +66,21 @@ if not os.path.isfile("data_file.json"):
 								countrydate = dict()
 								if ia.get_movie_release_dates(episodeid)['data']:
 									for reldate in ia.get_movie_release_dates(episodeid)['data']['raw release dates']:
-											dates = list(reversed(reldate["date"].split()))
-											sdates = " ".join(dates)
-											countryname = reldate['country'].rstrip("\n")
-											countrydate[countryname] = sdates
-											sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y %B %d")))
-									seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = sortedcd
-									print("sortedcd", sortedcd)
+										dates = list(reversed(reldate["date"].split()))
+										sdates = " ".join(dates)
+										countryname = reldate['country'].rstrip("\n")
+										countrydate[countryname] = sdates
+										print(len(dates))
+									# if len(sdates) == 1:
+									# 	sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y")))
+									# if len(sdates) == 2:
+									# 	sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y %B")))
+									# if len(sdates) == 3:
+									# 	sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y %B %d")))
+									# else:
+									# 	continue
+									seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = countrydate
+									# seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = sortedcd
 				else:
 					continue
 	except KeyError:
@@ -87,7 +95,6 @@ if not os.path.isfile("data_file.json"):
 with open("data_file.json", "r") as read_file:
 	data = json.load(read_file)
 
-# print(data)
 duomenys = list()
 for sp in data.items():
 	lepdict = dict()
@@ -98,7 +105,7 @@ for sp in data.items():
 				lepinfo = list()
 				ldatos = list()
 				for sd in p[1].items():
-					# print(sd)
+					# if datetime.today() >= datetime.strptime(sd[1], "%Y %B %d"):
 					a = sd[1].split()
 					if len(a) == 3:
 						met = int(a[0])
@@ -120,7 +127,8 @@ for sp in data.items():
 	if lepdict[sp[0]]:
 		duomenys.append(lepdict)
 
-# print("duomenys", duomenys)
+print("duomenys", duomenys)
+
 for i in duomenys:
 	for k, v in i.items():
 		print('---------------------------------------------')
