@@ -10,6 +10,59 @@ import os
 tod = datetime.today()
 ia = imdb.IMDb()
 
+
+def convert_dates(date):
+	d = date.split()
+	if d[1] == "January":
+		d[1] = "1"
+	elif d[1] == "1":
+		d[1] = "January"
+	elif d[1] == "February":
+		d[1] = "2"
+	elif d[1] == "2":
+		d[1] = "February"
+	elif d[1] == "March":
+		d[1] = "3"
+	elif d[1] == "3":
+		d[1] = "March"
+	elif d[1] == "April":
+		d[1] = "4"
+	elif d[1] == "4":
+		d[1] = "April"
+	elif d[1] == "May":
+		d[1] = "5"
+	elif d[1] == "5":
+		d[1] = "May"
+	elif d[1] == "June":
+		d[1] = "6"
+	elif d[1] == "6":
+		d[1] = "June"
+	elif d[1] == "July":
+		d[1] = "7"
+	elif d[1] == "7":
+		d[1] = "July"
+	elif d[1] == "August":
+		d[1] = "8"
+	elif d[1] == "8":
+		d[1] = "August"
+	elif d[1] == "September":
+		d[1] = "9"
+	elif d[1] == "9":
+		d[1] = "September"
+	elif d[1] == "October":
+		d[1] = "10"
+	elif d[1] == "10":
+		d[1] = "October"
+	elif d[1] == "November":
+		d[1] = "11"
+	elif d[1] == "11":
+		d[1] = "November"
+	elif d[1] == "December":
+		d[1] = "12"
+	elif d[1] == "12":
+		d[1] = "December"
+	return " ".join(d)
+
 watchseries = [
 	# "Attack on Titan",
 	# "Better Call Saul",
@@ -28,9 +81,9 @@ watchseries = [
 	# "The Mandalorian",
 	# "The Orville",
 	# "The Outsider",
-	# "The Witcher",
-	"True Detective",
-	"Westworld",
+	"The Witcher",
+	# "True Detective",
+	# "Westworld",
 ]
 
 seriesdict = dict()
@@ -42,8 +95,9 @@ if not os.path.isfile("data_file.json"):
 			tvseries = ia.search_movie(tv)
 			for serie in tvseries:
 				if not ifserie:
-					print("movieID", serie.movieID)
+					print("TV series ID", serie.movieID)
 					serieid = ia.get_movie(serie.movieID)
+					print(serieid['countries'])
 					if serieid['kind'] == 'tv series' and tv == serieid['title']:
 						ifserie.append(serieid['title'])
 						seriesdict[serieid['title']] = {}
@@ -70,23 +124,22 @@ if not os.path.isfile("data_file.json"):
 										sdates = " ".join(dates)
 										countryname = reldate['country'].rstrip("\n")
 										countrydate[countryname] = sdates
-										print(len(dates))
-									# if len(sdates) == 1:
-									# 	sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y")))
-									# if len(sdates) == 2:
-									# 	sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y %B")))
-									# if len(sdates) == 3:
-									# 	sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y %B %d")))
-									# else:
-									# 	continue
+										# if len(dates) == 1:
+										# 	# print(dates)
+										# 	sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y")))
+										# if len(dates) == 2:
+										# 	# print(dates)
+										# 	sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y %B")))
+										# if len(dates) == 3:
+										# 	# print(dates)
+										# 	sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y %B %d")))
+										# else:
+										# 	continue
 									seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = countrydate
-									# seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = sortedcd
 				else:
 					continue
 	except KeyError:
 		pass
-
-	# print(seriesdict)
 
 	with open("data_file.json", "w") as write_file:
 		json.dump(seriesdict, write_file, ensure_ascii=False, indent=4)
@@ -105,17 +158,18 @@ for sp in data.items():
 				lepinfo = list()
 				ldatos = list()
 				for sd in p[1].items():
-					# if datetime.today() >= datetime.strptime(sd[1], "%Y %B %d"):
 					a = sd[1].split()
 					if len(a) == 3:
-						met = int(a[0])
-						men = list(calendar.month_name).index(a[1])
-						die = int(a[2])
-						if (met >= tod.year):
-							if (men == tod.month) and (die >= tod.day):
-								ldatos.append(sd)
-							elif (men > tod.month):
-								ldatos.append(sd)
+						if datetime.today() <= datetime.strptime(sd[1], "%Y %B %d"):
+							# print(datetime.today() <= datetime.strptime(sd[1], "%Y %B %d"))
+							met = int(a[0])
+							men = list(calendar.month_name).index(a[1])
+							die = int(a[2])
+							if (met >= tod.year):
+								if (men == tod.month) and (die >= tod.day):
+									ldatos.append(sd)
+								elif (men > tod.month):
+									ldatos.append(sd)
 					# nepamiršti, kad jei naujausios serijos naujausia data jau praėjo
 					# tai nerodyti visų datų
 					else:
@@ -127,7 +181,7 @@ for sp in data.items():
 	if lepdict[sp[0]]:
 		duomenys.append(lepdict)
 
-print("duomenys", duomenys)
+# print("duomenys", duomenys)
 
 for i in duomenys:
 	for k, v in i.items():
