@@ -99,9 +99,8 @@ if not os.path.isfile("data_file.json"):
 			tvseries = ia.search_movie(tv)
 			for serie in tvseries:
 				if not ifserie:
-					print("TV ID", serie.movieID)
+					print("TvID", serie.movieID)
 					serieid = ia.get_movie(serie.movieID)
-					print(serieid['countries'])
 					if serieid['kind'] == 'tv series' and tv == serieid['title']:
 						ifserie.append(serieid['title'])
 						seriesdict[serieid['title']] = {}
