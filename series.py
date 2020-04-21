@@ -13,77 +13,81 @@ ia = imdb.IMDb()
 
 def convert_dates(date):
 	d = date.split()
-	if d[1] == "January":
-		d[1] = "1"
-	elif d[1] == "1":
-		d[1] = "January"
-	elif d[1] == "February":
-		d[1] = "2"
-	elif d[1] == "2":
-		d[1] = "February"
-	elif d[1] == "March":
-		d[1] = "3"
-	elif d[1] == "3":
-		d[1] = "March"
-	elif d[1] == "April":
-		d[1] = "4"
-	elif d[1] == "4":
-		d[1] = "April"
-	elif d[1] == "May":
-		d[1] = "5"
-	elif d[1] == "5":
-		d[1] = "May"
-	elif d[1] == "June":
-		d[1] = "6"
-	elif d[1] == "6":
-		d[1] = "June"
-	elif d[1] == "July":
-		d[1] = "7"
-	elif d[1] == "7":
-		d[1] = "July"
-	elif d[1] == "August":
-		d[1] = "8"
-	elif d[1] == "8":
-		d[1] = "August"
-	elif d[1] == "September":
-		d[1] = "9"
-	elif d[1] == "9":
-		d[1] = "September"
-	elif d[1] == "October":
-		d[1] = "10"
-	elif d[1] == "10":
-		d[1] = "October"
-	elif d[1] == "November":
-		d[1] = "11"
-	elif d[1] == "11":
-		d[1] = "November"
-	elif d[1] == "December":
-		d[1] = "12"
-	elif d[1] == "12":
-		d[1] = "December"
-	return " ".join(d)
+	if len(d) == 1:
+		return d[0]
+	else:
+		if d[1] == "January":
+			d[1] = "1"
+		elif d[1] == "1":
+			d[1] = "January"
+		elif d[1] == "February":
+			d[1] = "2"
+		elif d[1] == "2":
+			d[1] = "February"
+		elif d[1] == "March":
+			d[1] = "3"
+		elif d[1] == "3":
+			d[1] = "March"
+		elif d[1] == "April":
+			d[1] = "4"
+		elif d[1] == "4":
+			d[1] = "April"
+		elif d[1] == "May":
+			d[1] = "5"
+		elif d[1] == "5":
+			d[1] = "May"
+		elif d[1] == "June":
+			d[1] = "6"
+		elif d[1] == "6":
+			d[1] = "June"
+		elif d[1] == "July":
+			d[1] = "7"
+		elif d[1] == "7":
+			d[1] = "July"
+		elif d[1] == "August":
+			d[1] = "8"
+		elif d[1] == "8":
+			d[1] = "August"
+		elif d[1] == "September":
+			d[1] = "9"
+		elif d[1] == "9":
+			d[1] = "September"
+		elif d[1] == "October":
+			d[1] = "10"
+		elif d[1] == "10":
+			d[1] = "October"
+		elif d[1] == "November":
+			d[1] = "11"
+		elif d[1] == "11":
+			d[1] = "November"
+		elif d[1] == "December":
+			d[1] = "12"
+		elif d[1] == "12":
+			d[1] = "December"
+		return " ".join(d)
 
 watchseries = [
-	# "Attack on Titan",
-	# "Better Call Saul",
-	# "Black Mirror",
-	# "Brooklyn Nine-Nine",
-	# "Killing Eve",
-	# "Lucifer",
-	# "One Punch Man",
-	# "Star Trek: Picard",
-	# "Stranger Things",
-	# "The Blacklist",
-	# "The Boys",
-	# "The Expanse",
-	# "The Good Doctor",
-	# "The Grand Tour",
-	# "The Mandalorian",
-	# "The Orville",
-	# "The Outsider",
+	"Attack on Titan",
+	"Better Call Saul",
+	"Black Mirror",
+	"Brooklyn Nine-Nine",
+	"Killing Eve",
+	"Lucifer",
+	"One Punch Man",
+	"Star Trek: Picard",
+	"Stranger Things",
+	"The Blacklist",
+	"The Boys",
+	"The Expanse",
+	"The Good Doctor",
+	"The Grand Tour",
+	"The Mandalorian",
+	"The Orville",
+	"The Outsider",
 	"The Witcher",
-	# "True Detective",
-	# "Westworld",
+	"Sherlock",
+	"True Detective",
+	"Westworld",
 ]
 
 seriesdict = dict()
@@ -95,7 +99,7 @@ if not os.path.isfile("data_file.json"):
 			tvseries = ia.search_movie(tv)
 			for serie in tvseries:
 				if not ifserie:
-					print("TV series ID", serie.movieID)
+					print("TV ID", serie.movieID)
 					serieid = ia.get_movie(serie.movieID)
 					print(serieid['countries'])
 					if serieid['kind'] == 'tv series' and tv == serieid['title']:
@@ -118,24 +122,36 @@ if not os.path.isfile("data_file.json"):
 								episodeid = serieid['episodes'][s][e].movieID
 								seriesdict[serieid['title']][sstring][estring] = {}
 								countrydate = dict()
+								laiks = list()
+								laikd = list()
 								if ia.get_movie_release_dates(episodeid)['data']:
 									for reldate in ia.get_movie_release_dates(episodeid)['data']['raw release dates']:
 										dates = list(reversed(reldate["date"].split()))
 										sdates = " ".join(dates)
 										countryname = reldate['country'].rstrip("\n")
+										if countryname == "USA":
+											countryname = "United States"
+										if countryname == "UK":
+											countryname = "United Kingdom"
 										countrydate[countryname] = sdates
-										# if len(dates) == 1:
-										# 	# print(dates)
-										# 	sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y")))
-										# if len(dates) == 2:
-										# 	# print(dates)
-										# 	sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y %B")))
-										# if len(dates) == 3:
-										# 	# print(dates)
-										# 	sortedcd = dict(sorted(countrydate.items(), key=lambda x: datetime.strptime(x[1], "%Y %B %d")))
-										# else:
-										# 	continue
-									seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = countrydate
+									for k, v in countrydate.items():
+										countrydate[k] = convert_dates(v)
+									sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
+									for k, v in sortedcd.items():
+										sortedcd[k] = convert_dates(v)
+									for k, v in sortedcd.items():
+										laiks.append(k)
+										laikd.append(v)
+									print("laiks", laiks)
+									print("laikd", laikd)
+									for idx, v in enumerate(zip(laiks, laikd)):
+										if v[0] in serieid['countries']:
+											laiks.remove(v[0])
+											laikd.pop(idx)
+											laiks.insert(0, v[0])
+											laikd.insert(0, v[1])
+									sortedcdn = dict(zip(laiks, laikd))
+									seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = sortedcdn
 				else:
 					continue
 	except KeyError:
