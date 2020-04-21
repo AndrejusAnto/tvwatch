@@ -142,8 +142,6 @@ if not os.path.isfile("data_file.json"):
 									for k, v in sortedcd.items():
 										laiks.append(k)
 										laikd.append(v)
-									print("laiks", laiks)
-									print("laikd", laikd)
 									for idx, v in enumerate(zip(laiks, laikd)):
 										if v[0] in serieid['countries']:
 											laiks.remove(v[0])
