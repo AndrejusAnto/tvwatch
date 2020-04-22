@@ -66,6 +66,7 @@ def convert_dates(date):
 			d[1] = "December"
 		return " ".join(d)
 
+
 watchseries = [
 	"Attack on Titan",
 	"Better Call Saul",
@@ -174,7 +175,6 @@ for sp in data.items():
 					a = sd[1].split()
 					if len(a) == 3:
 						if datetime.today() <= datetime.strptime(sd[1], "%Y %B %d"):
-							# print(datetime.today() <= datetime.strptime(sd[1], "%Y %B %d"))
 							met = int(a[0])
 							men = list(calendar.month_name).index(a[1])
 							die = int(a[2])
