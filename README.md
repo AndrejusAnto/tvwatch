@@ -13,3 +13,5 @@ pip install IMDbPY
 * pip install, nes nors conda ir turi daug package'ų, bet neturi normalios IMDbPY versijos, todėl reikia instaliuot per pip
 
 Kol kas reikia faile series.py į watchseries list'ą sudėti savo serialų pavadinimus. Galiausiai per terminalą: python series.py. Bus sukurtas json failas, kur bus išsaugomi duomenys ir tada informacija bus atprint'a terminale.
+
+![Alt Text](https://github.com/AndrejusAnto/tvwatch/blob/alpha/demo.gif)
