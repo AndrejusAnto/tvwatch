@@ -154,10 +154,8 @@ if not os.path.isfile("data_file.json"):
 										if countryname == "UK":
 											countryname = "United Kingdom"
 										countrydate[countryname] = sdates
-									# print("countrydate1", countrydate)
 									for k, v in countrydate.items():
 										countrydate[k] = convert_dates(v)
-									# print("countrydate2", countrydate)
 									sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
 									for k, v in sortedcd.items():
 										sortedcd[k] = convert_dates(v)
