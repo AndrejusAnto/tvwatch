@@ -146,7 +146,6 @@ if not os.path.isfile("data_file.json"):
 								if ia.get_movie_release_dates(episodeid)['data']:
 									for reldate in ia.get_movie_release_dates(episodeid)['data']['raw release dates']:
 										dates = list(reversed(reldate["date"].split()))
-										print(dates)
 										sdates = " ".join(dates)
 										countryname = reldate['country'].rstrip("\n")
 										if countryname == "USA":
@@ -170,6 +169,8 @@ if not os.path.isfile("data_file.json"):
 											laikd.insert(0, v[1])
 									sortedcdn = dict(zip(laiks, laikd))
 									seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = sortedcdn
+								else:
+									seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = {}
 				else:
 					continue
 	except KeyError:
