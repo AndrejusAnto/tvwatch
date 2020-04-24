@@ -184,12 +184,17 @@ else:
 	with open("data_file.json", "r") as read_file:
 		data = json.load(read_file)
 	for s, si in data.items():
-		laikn = "".join([i for i in s if i.isdigit()])
-		print(laikn)
-		# for e, ei in si.items():
-			# for e in s[1].items():
-			# 	for p in e[1].items():c
-			# 		print()
+		seriesid = "".join([i for i in s if i.isdigit()])
+		print(seriesid)
+		for se, sei in si.items():
+			print(se)
+			for e, ei in sei.items():
+				for p, pd in ei.items():
+					for s, d in pd.items():
+						print(s)
+						print(d)
+				# for p in e[1].items():
+				# 	print()
 
 # duomenys = list()
 # for sp in data.items():
