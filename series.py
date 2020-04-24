@@ -119,27 +119,29 @@ if not os.path.isfile("data_file.json"):
 			tvseries = ia.search_movie(tv)
 			for serie in tvseries:
 				if not ifserie:
-					print("TvID", serie.movieID)
-					serieid = ia.get_movie(serie.movieID)
-					if serieid['kind'] == 'tv series' and tv == serieid['title']:
-						ifserie.append(serieid['title'])
-						seriesdict[serieid['title']] = {}
-						ia.update(serieid, 'episodes')
+					seriesid = serie.movieID
+					print("TvID", seriesid, type(seriesid))
+					serieinfo = ia.get_movie(seriesid)
+					if serieinfo['kind'] == 'tv series' and tv == serieinfo['title']:
+						ifserie.append(serieinfo['title'])
+						pavad = f"{serieinfo['title']}, ID{seriesid}"
+						seriesdict[pavad] = {}
+						ia.update(serieinfo, 'episodes')
 						seasonlist = list()
-						for i in serieid['episodes']:
+						for i in serieinfo['episodes']:
 							if i >= 0:
 								seasonlist.append(i)
 						for s in list(sorted(seasonlist)):
 							listepiz = list()
 							sstring = f"S{s}"
-							seriesdict[serieid['title']][sstring] = {}
-							print("episodes number", len(serieid['episodes'][s]))
-							for k in serieid['episodes'][s]:
+							seriesdict[pavad][sstring] = {}
+							print("episodes number", len(serieinfo['episodes'][s]))
+							for k in serieinfo['episodes'][s]:
 								listepiz.append(k)
 							for e in listepiz:
 								estring = f"E{e}"
-								episodeid = serieid['episodes'][s][e].movieID
-								seriesdict[serieid['title']][sstring][estring] = {}
+								episodeid = serieinfo['episodes'][s][e].movieID
+								seriesdict[pavad][sstring][estring] = {}
 								countrydate = dict()
 								laiks = list()
 								laikd = list()
@@ -162,15 +164,15 @@ if not os.path.isfile("data_file.json"):
 										laiks.append(k)
 										laikd.append(v)
 									for idx, v in enumerate(zip(laiks, laikd)):
-										if v[0] in serieid['countries']:
+										if v[0] in serieinfo['countries']:
 											laiks.remove(v[0])
 											laikd.pop(idx)
 											laiks.insert(0, v[0])
 											laikd.insert(0, v[1])
 									sortedcdn = dict(zip(laiks, laikd))
-									seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = sortedcdn
+									seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = sortedcdn
 								else:
-									seriesdict[serieid['title']][sstring][estring][serieid['episodes'][s][e]['title']] = {}
+									seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = {}
 				else:
 					continue
 	except KeyError:
@@ -181,17 +183,13 @@ if not os.path.isfile("data_file.json"):
 else:
 	with open("data_file.json", "r") as read_file:
 		data = json.load(read_file)
-	# for sp in data.items():
-	# 	lepdict = dict()
-	# 	lepdict[sp[0]] = list()
-	# 	for s in sp[1].items():
-	# 		for e in s[1].items():
-	# 			for p in e[1].items():
-	# 				print
-
-
-
-
+	for s, si in data.items():
+		laikn = "".join([i for i in s if i.isdigit()])
+		print(laikn)
+		# for e, ei in si.items():
+			# for e in s[1].items():
+			# 	for p in e[1].items():c
+			# 		print()
 
 # duomenys = list()
 # for sp in data.items():
