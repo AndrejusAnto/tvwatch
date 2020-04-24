@@ -8,6 +8,7 @@ import calendar
 import os
 
 tod = datetime.today()
+listtod = [tod.year, tod.month, tod.day]
 ia = imdb.IMDb()
 
 
@@ -86,26 +87,26 @@ def convert_dates(dates):
 
 
 watchseries = [
-	# "Attack on Titan",
-	# "Better Call Saul",
-	# "Black Mirror",
-	# "Brooklyn Nine-Nine",
-	# "Killing Eve",
-	# "Lucifer",
-	# "One Punch Man",
-	# "Star Trek: Picard",
-	# "Stranger Things",
-	# "The Blacklist",
-	# "The Boys",
-	# "The Expanse",
-	# "The Good Doctor",
-	# "The Grand Tour",
-	# "The Mandalorian",
-	# "The Orville",
-	# "The Outsider",
+	"Attack on Titan",
+	"Better Call Saul",
+	"Black Mirror",
+	"Brooklyn Nine-Nine",
+	"Killing Eve",
+	"Lucifer",
+	"One Punch Man",
+	"Star Trek: Picard",
+	"Stranger Things",
+	"The Blacklist",
+	"The Boys",
+	"The Expanse",
+	"The Good Doctor",
+	"The Grand Tour",
+	"The Mandalorian",
+	"The Orville",
+	"The Outsider",
 	"The Witcher",
-	# "Sherlock",
-	# "True Detective",
+	"Sherlock",
+	"True Detective",
 	"Westworld",
 ]
 
@@ -120,8 +121,8 @@ if not os.path.isfile("data_file.json"):
 			for serie in tvseries:
 				if not ifserie:
 					seriesid = serie.movieID
-					print("TvID", seriesid, type(seriesid))
 					serieinfo = ia.get_movie(seriesid)
+					print(serieinfo['title'], "TvID", seriesid)
 					if serieinfo['kind'] == 'tv series' and tv == serieinfo['title']:
 						ifserie.append(serieinfo['title'])
 						pavad = f"{serieinfo['title']}, ID{seriesid}"
@@ -185,16 +186,27 @@ else:
 		data = json.load(read_file)
 	for s, si in data.items():
 		seriesid = "".join([i for i in s if i.isdigit()])
-		print(seriesid)
+		# print(seriesid)
 		for se, sei in si.items():
-			print(se)
+			# print(se)
 			for e, ei in sei.items():
 				for p, pd in ei.items():
 					for s, d in pd.items():
-						print(s)
-						print(d)
-				# for p in e[1].items():
-				# 	print()
+						datos = convert_dates(d)
+						print("datos", datos)
+						print("listtod", listtod)
+						if datos[0] < listtod[0]:
+							continue
+						if datos
+						# # if "Episode" in 
+						# if datos > listtod :
+						# 	serieinfo = ia.get_movie(seriesid)
+						# 	ia.update(serieinfo, 'episodes')
+						# 	print("Daugiau")
+						# else:
+						# 	print("ma=iau")
+							# print(serieinfo)
+							# print(datos)
 
 # duomenys = list()
 # for sp in data.items():
