@@ -110,8 +110,8 @@ watchseries = [
 # 	"Westworld",
 ]
 
-seriesdict = dict()
-duomenys = list()
+seriesdict = {}
+duomenys = []
 
 if not os.path.isfile("data_file.json"):
 	try:
@@ -128,12 +128,12 @@ if not os.path.isfile("data_file.json"):
 						pavad = f"{serieinfo['title']}, ID{seriesid}"
 						seriesdict[pavad] = {}
 						ia.update(serieinfo, 'episodes')
-						seasonlist = list()
+						seasonlist = []
 						for i in serieinfo['episodes']:
 							if i >= 0:
 								seasonlist.append(i)
 						for s in list(sorted(seasonlist)):
-							listepiz = list()
+							listepiz = []
 							sstring = f"S{s}"
 							seriesdict[pavad][sstring] = {}
 							print("episodes number", len(serieinfo['episodes'][s]))
@@ -143,9 +143,9 @@ if not os.path.isfile("data_file.json"):
 								estring = f"E{e}"
 								episodeid = serieinfo['episodes'][s][e].movieID
 								seriesdict[pavad][sstring][estring] = {}
-								countrydate = dict()
-								laiks = list()
-								laikd = list()
+								countrydate = {}
+								laiks = []
+								laikd = []
 								if ia.get_movie_release_dates(episodeid)['data']:
 									for reldate in ia.get_movie_release_dates(episodeid)['data']['raw release dates']:
 										dates = list(reversed(reldate["date"].split()))
@@ -185,35 +185,64 @@ if not os.path.isfile("data_file.json"):
 else:
 	with open("data_file.json", "r") as read_file:
 		data = json.load(read_file)
-	# for s, si in data.items():
-	# 	seriesid = "".join([i for i in s if i.isdigit()])
-	# 	# print(seriesid)
-	# 	for se, sei in si.items():
-	# 		# print(se)
-	# 		for e, ei in sei.items():
-	# 			for p, pd in ei.items():
-					# for s, d in pd.items():
-					# 	datos = convert_dates(d)
-					# 	if len(datos) == 1:
-					# 		if (datos[0] != listtod[0]):
-					# 			pass
-					# 		else:
-					# 			if ("Episode" in p):
-					# 				serieinfo = ia.get_movie(seriesid)
-					# 				ia.update(serieinfo, 'episodes')
-					# 				episodeid = serieinfo['episodes'][s][e].movieID
-					# 	elif len(datos) == 2:
-					# 		if (datos[0] != listtod[0]):
-					# 			pass
-					# 		else:
-					# 			if ("Episode" in p):
-					# 				if datos
-					# 	else:
-					# 		if (datos[0] != listtod[0]):
-					# 			pass
-					# 		else:
-					# 			if ("Episode" in p):
-					# 				if datos
+	for s, si in data.items():
+		seriesid = "".join([i for i in s if i.isdigit()])
+		for se, sei in si.items():
+			for e, ei in sei.items():
+				for p, pd in ei.items():
+					for sa, d in pd.items():
+						datos = convert_dates(d)
+						if len(datos) == 1:
+							if (datos[0] != listtod[0]):
+								pass
+							else:
+								if ("Episode" in p):
+									countrydate = {}
+									serieinfo = ia.get_movie(seriesid)
+									ia.update(serieinfo, 'episodes')
+									episodeid = serieinfo['episodes'][int(se[1])][int(e[1])].movieID
+									if ia.get_movie_release_dates(episodeid)['data']:
+										for reldate in ia.get_movie_release_dates(episodeid)['data']['raw release dates']:
+											dates = list(reversed(reldate["date"].split()))
+											sdates = " ".join(dates)
+											countryname = reldate['country'].rstrip("\n")
+											if countryname == "USA":
+												countryname = "United States"
+											if countryname == "UK":
+												countryname = "United Kingdom"
+											countrydate[countryname] = sdates
+										for k, v in countrydate.items():
+											countrydate[k] = convert_dates(v)
+										sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
+										for k, v in sortedcd.items():
+											sortedcd[k] = convert_dates(v)
+										for k, v in sortedcd.items():
+											laiks.append(k)
+											laikd.append(v)
+										for idx, v in enumerate(zip(laiks, laikd)):
+											if v[0] in serieinfo['countries']:
+												if convert_dates(v[1]) <= convert_dates(laikd[0]):
+													laiks.remove(v[0])
+													laikd.pop(idx)
+													laiks.insert(0, v[0])
+													laikd.insert(0, v[1])
+										sortedcdn = dict(zip(laiks, laikd))
+										seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = sortedcdn
+									else:
+										seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = {}
+											# print(data[s][se][e][p][sa]) gaunam datą
+						# elif len(datos) == 2:
+						# 	if (datos[0] != listtod[0]):
+						# 		pass
+						# 	else:
+						# 		if ("Episode" in p):
+						# 			if datos
+						# else:
+						# 	if (datos[0] != listtod[0]):
+						# 		pass
+						# 	else:
+						# 		if ("Episode" in p):
+						# 			if datos
 						# 	serieinfo = ia.get_movie(seriesid)
 						# 	ia.update(serieinfo, 'episodes')
 						# 	print("Daugiau")
@@ -222,15 +251,15 @@ else:
 							# print(serieinfo)
 							# print(datos)
 
-# duomenys = list()
+# duomenys = []
 # for sp in data.items():
-# 	lepdict = dict()
-# 	lepdict[sp[0]] = list()
+# 	lepdict = {}
+# 	lepdict[sp[0]] = []
 # 	for s in sp[1].items():
 # 		for e in s[1].items():
 # 			for p in e[1].items():
-# 				lepinfo = list()
-# 				ldatos = list()
+# 				lepinfo = []
+# 				ldatos = []
 # 				for sd in p[1].items():
 # 					a = sd[1].split()
 # 					if len(a) == 3:
