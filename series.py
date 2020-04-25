@@ -87,27 +87,27 @@ def convert_dates(dates):
 
 
 watchseries = [
-	"Attack on Titan",
-	"Better Call Saul",
-	"Black Mirror",
-	"Brooklyn Nine-Nine",
+	# "Attack on Titan",
+	# "Better Call Saul",
+	# "Black Mirror",
+	# "Brooklyn Nine-Nine",
 	"Killing Eve",
-	"Lucifer",
-	"One Punch Man",
-	"Star Trek: Picard",
-	"Stranger Things",
-	"The Blacklist",
-	"The Boys",
-	"The Expanse",
-	"The Good Doctor",
-	"The Grand Tour",
-	"The Mandalorian",
-	"The Orville",
-	"The Outsider",
-	"The Witcher",
-	"Sherlock",
-	"True Detective",
-	"Westworld",
+# 	"Lucifer",
+# 	"One Punch Man",
+# 	"Star Trek: Picard",
+# 	"Stranger Things",
+# 	"The Blacklist",
+# 	"The Boys",
+# 	"The Expanse",
+# 	"The Good Doctor",
+# 	"The Grand Tour",
+# 	"The Mandalorian",
+# 	"The Orville",
+# 	"The Outsider",
+# 	"The Witcher",
+# 	"Sherlock",
+# 	"True Detective",
+# 	"Westworld",
 ]
 
 seriesdict = dict()
@@ -166,10 +166,11 @@ if not os.path.isfile("data_file.json"):
 										laikd.append(v)
 									for idx, v in enumerate(zip(laiks, laikd)):
 										if v[0] in serieinfo['countries']:
-											laiks.remove(v[0])
-											laikd.pop(idx)
-											laiks.insert(0, v[0])
-											laikd.insert(0, v[1])
+											if convert_dates(v[1]) <= convert_dates(laikd[0]):
+												laiks.remove(v[0])
+												laikd.pop(idx)
+												laiks.insert(0, v[0])
+												laikd.insert(0, v[1])
 									sortedcdn = dict(zip(laiks, laikd))
 									seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = sortedcdn
 								else:
@@ -184,22 +185,35 @@ if not os.path.isfile("data_file.json"):
 else:
 	with open("data_file.json", "r") as read_file:
 		data = json.load(read_file)
-	for s, si in data.items():
-		seriesid = "".join([i for i in s if i.isdigit()])
-		# print(seriesid)
-		for se, sei in si.items():
-			# print(se)
-			for e, ei in sei.items():
-				for p, pd in ei.items():
-					for s, d in pd.items():
-						datos = convert_dates(d)
-						print("datos", datos)
-						print("listtod", listtod)
-						if datos[0] < listtod[0]:
-							continue
-						if datos
-						# # if "Episode" in 
-						# if datos > listtod :
+	# for s, si in data.items():
+	# 	seriesid = "".join([i for i in s if i.isdigit()])
+	# 	# print(seriesid)
+	# 	for se, sei in si.items():
+	# 		# print(se)
+	# 		for e, ei in sei.items():
+	# 			for p, pd in ei.items():
+					# for s, d in pd.items():
+					# 	datos = convert_dates(d)
+					# 	if len(datos) == 1:
+					# 		if (datos[0] != listtod[0]):
+					# 			pass
+					# 		else:
+					# 			if ("Episode" in p):
+					# 				serieinfo = ia.get_movie(seriesid)
+					# 				ia.update(serieinfo, 'episodes')
+					# 				episodeid = serieinfo['episodes'][s][e].movieID
+					# 	elif len(datos) == 2:
+					# 		if (datos[0] != listtod[0]):
+					# 			pass
+					# 		else:
+					# 			if ("Episode" in p):
+					# 				if datos
+					# 	else:
+					# 		if (datos[0] != listtod[0]):
+					# 			pass
+					# 		else:
+					# 			if ("Episode" in p):
+					# 				if datos
 						# 	serieinfo = ia.get_movie(seriesid)
 						# 	ia.update(serieinfo, 'episodes')
 						# 	print("Daugiau")
