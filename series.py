@@ -193,13 +193,14 @@ else:
 		data = json.load(read_file)
 	for series, seriesinfo in data.items():
 		seriesid = "".join([i for i in series if i.isdigit()])
+		serieinfo = ia.get_movie(seriesid)
+		ia.update(serieinfo, 'episodes')
 		for sezonas, sezonoi in seriesinfo.items():
 			for epizodas, epizodoi in sezonoi.items():
 				for epizodopavad, epizododatos in epizodoi.items():
 					if not epizododatos:
+						# sukeilti į funkciją
 						countrydate = {}
-						serieinfo = ia.get_movie(seriesid)
-						ia.update(serieinfo, 'episodes')
 						episodeid = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])].movieID
 						if ia.get_movie_release_dates(episodeid)['data']:
 							for reldate in ia.get_movie_release_dates(episodeid)['data']['raw release dates']:
@@ -244,11 +245,44 @@ else:
 							if (datos[0] != listtod[0]):
 								continue
 							else:
-								print(datos)
-								# if "Episode" in epizodopavad:
-						# if len(datos) == 1:
-						# 	if (datos[0] != listtod[0]):
-						# 		pass
+								print(epizodopavad, sezonas, epizodas)
+								countrydate = {}
+								episodeid = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])].movieID
+								if ia.get_movie_release_dates(episodeid)['data']:
+									for reldate in ia.get_movie_release_dates(episodeid)['data']['raw release dates']:
+										dates = list(reversed(reldate["date"].split()))
+										sdates = " ".join(dates)
+										countryname = reldate['country'].rstrip("\n")
+										if countryname == "USA":
+											countryname = "United States"
+										if countryname == "UK":
+											countryname = "United Kingdom"
+										countrydate[countryname] = sdates
+									for k, v in countrydate.items():
+										countrydate[k] = convert_dates(v)
+									sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
+									countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+									if countries:
+										sortedcountries = dict(sorted(countries.items(), key=lambda x: x[1]))
+										pirmasalis = list(sortedcountries.values())[0]
+										for k, v in sortedcd.copy().items():
+											if v < pirmasalis:
+												del sortedcd[k]
+									else:
+										continue
+									for k, v in sortedcd.items():
+										sortedcd[k] = convert_dates(v)
+									laiks = list(sortedcd.keys())
+									laikd = list(sortedcd.values())
+									for idx, v in enumerate(zip(laiks, laikd)):
+										if v[0] in serieinfo['countries']:
+											if convert_dates(v[1]) <= convert_dates(laikd[0]):
+												laiks.remove(v[0])
+												laikd.pop(idx)
+												laiks.insert(0, v[0])
+												laikd.insert(0, v[1])
+									sortedcdn = dict(zip(laiks, laikd))
+									data[series][sezonas][epizodas][epizodopavad] = sortedcdn
 
 	with open("data_file.json", "w") as write_file:
 		json.dump(data, write_file, ensure_ascii=False, indent=4)
