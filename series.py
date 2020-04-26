@@ -200,9 +200,7 @@ else:
 						countrydate = {}
 						serieinfo = ia.get_movie(seriesid)
 						ia.update(serieinfo, 'episodes')
-						episodeid = serieinfo['episodes'][int(sezonas[1])][int(epizodas[1])].movieID
-						laiks = []
-						laikd = []
+						episodeid = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])].movieID
 						if ia.get_movie_release_dates(episodeid)['data']:
 							for reldate in ia.get_movie_release_dates(episodeid)['data']['raw release dates']:
 								dates = list(reversed(reldate["date"].split()))
@@ -216,11 +214,19 @@ else:
 							for k, v in countrydate.items():
 								countrydate[k] = convert_dates(v)
 							sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
+							countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+							if countries:
+								sortedcountries = dict(sorted(countries.items(), key=lambda x: x[1]))
+								pirmasalis = list(sortedcountries.values())[0]
+								for k, v in sortedcd.copy().items():
+									if v < pirmasalis:
+										del sortedcd[k]
+							else:
+								continue
 							for k, v in sortedcd.items():
 								sortedcd[k] = convert_dates(v)
-							for k, v in sortedcd.items():
-								laiks.append(k)
-								laikd.append(v)
+							laiks = list(sortedcd.keys())
+							laikd = list(sortedcd.values())
 							for idx, v in enumerate(zip(laiks, laikd)):
 								if v[0] in serieinfo['countries']:
 									if convert_dates(v[1]) <= convert_dates(laikd[0]):
@@ -235,6 +241,11 @@ else:
 					else:
 						for salis, sdata in epizododatos.items():
 							datos = convert_dates(sdata)
+							if (datos[0] != listtod[0]):
+								continue
+							else:
+								print(datos)
+								# if "Episode" in epizodopavad:
 						# if len(datos) == 1:
 						# 	if (datos[0] != listtod[0]):
 						# 		pass
