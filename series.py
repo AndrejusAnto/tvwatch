@@ -86,35 +86,35 @@ def convert_dates(dates):
 				return d
 
 
-# def ar_update(sid):
-# 	serieinfo = ia.get_movie(sid)
-# 	print("Ieškoma")
-# 	ia.update(serieinfo, 'episodes')
-# 	print("Atnaujinama")
+def atrupdate(tod, ed):
+	if ed != {}:
+		pirmasalis = list(ed.keys())[0]
+		data = convert_dates(ed[pirmasalis])
+		return [1 if x == y else 0 for x, y in zip(data, tod) if len(data) < 3]
 
 
 watchseries = [
-	# "Attack on Titan",
-	# "Better Call Saul",
-	# "Black Mirror",
-	# "Brooklyn Nine-Nine",
-	# "Killing Eve",
+	"Attack on Titan",
+	"Better Call Saul",
+	"Black Mirror",
+	"Brooklyn Nine-Nine",
+	"Killing Eve",
 	"Lucifer",
-	# "One Punch Man",
-	# "Star Trek: Picard",
-	# "Stranger Things",
-	# "The Blacklist",
-	# "The Boys",
-	# "The Expanse",
-	# "The Good Doctor",
-	# "The Grand Tour",
-	# "The Mandalorian",
-	# "The Orville",
-	# "The Outsider",
-	# "The Witcher",
+	"One Punch Man",
+	"Star Trek: Picard",
+	"Stranger Things",
+	"The Blacklist",
+	"The Boys",
+	"The Expanse",
+	"The Good Doctor",
+	"The Grand Tour",
+	"The Mandalorian",
+	"The Orville",
+	"The Outsider",
+	"The Witcher",
 	"Sherlock",
-	# "True Detective",
-	# "Westworld",
+	"True Detective",
+	"Westworld",
 ]
 
 seriesdict = {}
@@ -209,16 +209,19 @@ else:
 		for sezonas, sezonoi in seriesinfo.items():
 			for epizodas, epizodoi in sezonoi.items():
 				for epizodopavad, epizododatos in epizodoi.items():
-					if not epizododatos:
+					atr = atrupdate(listtod, epizododatos)
+					if not epizododatos or ((sum(atr) == 1 and len(atr) == 1) or (sum(atr) == 2 and len(atr) == 2)):
 						if aratn:
-							print("if", epizodopavad, sezonas, epizodas)
+							print(series, epizodopavad, sezonas, epizodas)
 							aratn = False
 							print("Atnaujinama")
 							serieinfo = ia.get_movie(seriesid)
 							ia.update(serieinfo, 'episodes')
-
+						# tie serialai kurie gali buti pratesti, bet neturi datos pvz. One Punch Man
+						# pabandyti pagal imdb prad=ios pabaigos datas
+						# multiproceses https://kite.com/python/docs/multiprocessing.managers.SyncManager.dict
+						print(series, epizodopavad, sezonas, epizodas)
 						countrydate = {}
-						print("serieinfo", serieinfo)
 						epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
 						episodeid = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])].movieID
 						realesedata = ia.get_movie_release_dates(episodeid)['data']
@@ -261,51 +264,55 @@ else:
 								data[series][sezonas][epizodas] = {epzname: sortedcdn}
 						else:
 							continue
+					else:
+						continue
 
 	with open("data_file.json", "w") as write_file:
 		json.dump(data, write_file, ensure_ascii=False, indent=4)
 
+with open("data_file.json", "r") as read_file:
+	data = json.load(read_file)
 
-# duomenys = []
-# for sp in data.items():
-# 	lepdict = {}
-# 	lepdict[sp[0]] = []
-# 	for s in sp[1].items():
-# 		for e in s[1].items():
-# 			for p in e[1].items():
-# 				lepinfo = []
-# 				ldatos = []
-# 				for sd in p[1].items():
-# 					a = sd[1].split()
-# 					if len(a) == 3:
-# 						if datetime.today() <= datetime.strptime(sd[1], "%Y %B %d"):
-# 							met = int(a[0])
-# 							men = list(calendar.month_name).index(a[1])
-# 							die = int(a[2])
-# 							if (met >= tod.year):
-# 								if (men == tod.month) and (die >= tod.day):
-# 									ldatos.append(sd)
-# 								elif (men > tod.month):
-# 									ldatos.append(sd)
-# 					else:
-# 						continue
-# 				if ldatos:
-# 					lepinfo = [s[0], e[0], p[0]]
-# 					lepinfo.append(ldatos)
-# 					lepdict[sp[0]].append(lepinfo)
-# 	if lepdict[sp[0]]:
-# 		duomenys.append(lepdict)
+duomenys = []
+for sp in data.items():
+	lepdict = {}
+	lepdict[sp[0]] = []
+	for s in sp[1].items():
+		for e in s[1].items():
+			for p in e[1].items():
+				lepinfo = []
+				ldatos = []
+				for sd in p[1].items():
+					a = sd[1].split()
+					if len(a) == 3:
+						if datetime.today() <= datetime.strptime(sd[1], "%Y %B %d"):
+							met = int(a[0])
+							men = list(calendar.month_name).index(a[1])
+							die = int(a[2])
+							if (met >= tod.year):
+								if (men == tod.month) and (die >= tod.day):
+									ldatos.append(sd)
+								elif (men > tod.month):
+									ldatos.append(sd)
+					else:
+						continue
+				if ldatos:
+					lepinfo = [s[0], e[0], p[0]]
+					lepinfo.append(ldatos)
+					lepdict[sp[0]].append(lepinfo)
+	if lepdict[sp[0]]:
+		duomenys.append(lepdict)
 
-# # print("duomenys", duomenys)
+# print("duomenys", duomenys)
 
-# for i in duomenys:
-# 	for k, v in i.items():
-# 		print('---------------------------------------------')
-# 		print('---------------------------------------------')
-# 		print(tod.strftime("%Y %B %d"))
-# 		print(f'Serialas "{k}"')
-# 		for j in v:
-# 			print('---------------------------------------------')
-# 			print(f'****** {j[0]} {j[1]} "{j[2]}"')
-# 			for d in j[-1]:
-# 				print(f'****** {" ".join(d)}')
+for i in duomenys:
+	for k, v in i.items():
+		print('---------------------------------------------')
+		print('---------------------------------------------')
+		print(tod.strftime("%Y %B %d"))
+		print(f'Serialas "{k}"')
+		for j in v:
+			print('---------------------------------------------')
+			print(f'****** {j[0]} {j[1]} "{j[2]}"')
+			for d in j[-1]:
+				print(f'****** {" ".join(d)}')
