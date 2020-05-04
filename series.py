@@ -94,24 +94,24 @@ def atrupdate(tod, ed):
 
 
 watchseries = [
-	"Attack on Titan",
-	"Better Call Saul",
-	"Black Mirror",
-	"Brooklyn Nine-Nine",
-	"Killing Eve",
-	"Lucifer",
-	"One Punch Man",
-	"Star Trek: Picard",
-	"Stranger Things",
-	"The Blacklist",
-	"The Boys",
-	"The Expanse",
-	"The Good Doctor",
-	"The Grand Tour",
-	"The Mandalorian",
-	"The Orville",
-	"The Outsider",
-	"The Witcher",
+	# "Attack on Titan",
+	# "Better Call Saul",
+	# "Black Mirror",
+	# "Brooklyn Nine-Nine",
+	# "Killing Eve",
+	# "Lucifer",
+	# "One Punch Man",
+	# "Star Trek: Picard",
+	# "Stranger Things",
+	# "The Blacklist",
+	# "The Boys",
+	# "The Expanse",
+	# "The Good Doctor",
+	# "The Grand Tour",
+	# "The Mandalorian",
+	# "The Orville",
+	# "The Outsider",
+	# "The Witcher",
 	"Sherlock",
 	"True Detective",
 	"Westworld",
@@ -129,10 +129,11 @@ if not os.path.isfile("data_file.json"):
 				if not ifserie:
 					seriesid = serie.movieID
 					serieinfo = ia.get_movie(seriesid)
-					print(serieinfo['title'], "TvID", seriesid)
+					serieyear = serieinfo["series years"]
+					print(f'{serieinfo["title"]} | {serieyear} | ID{seriesid}')
 					if serieinfo['kind'] == 'tv series' and tv == serieinfo['title']:
 						ifserie.append(serieinfo['title'])
-						pavad = f"{serieinfo['title']}, ID{seriesid}"
+						pavad = f'{serieinfo["title"]} | {serieyear} | ID{seriesid}'
 						seriesdict[pavad] = {}
 						ia.update(serieinfo, 'episodes')
 						seasonlist = []
@@ -203,7 +204,10 @@ else:
 		data = json.load(read_file)
 
 	for series, seriesinfo in data.items():
-		seriesid = "".join([i for i in series if i.isdigit()])
+		seriesid = [i.strip() for i in series.split("|")][-1]
+		print(seriesid)
+		seriesid = "".join([i for i in seriesid if i.isdigit()])
+		print(seriesid)
 		aratn = True
 		serieinfo = True
 		for sezonas, sezonoi in seriesinfo.items():
@@ -217,9 +221,9 @@ else:
 							print("Atnaujinama")
 							serieinfo = ia.get_movie(seriesid)
 							ia.update(serieinfo, 'episodes')
-						# tie serialai kurie gali buti pratesti, bet neturi datos pvz. One Punch Man
+						# TODO tie serialai kurie gali buti pratesti, bet neturi datos pvz. One Punch Man
 						# pabandyti pagal imdb prad=ios pabaigos datas
-						# multiproceses https://kite.com/python/docs/multiprocessing.managers.SyncManager.dict
+						# TODO multiproceses https://kite.com/python/docs/multiprocessing.managers.SyncManager.dict
 						print(series, epizodopavad, sezonas, epizodas)
 						countrydate = {}
 						epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
