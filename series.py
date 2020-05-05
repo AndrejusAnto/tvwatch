@@ -205,9 +205,7 @@ else:
 
 	for series, seriesinfo in data.items():
 		seriesid = [i.strip() for i in series.split("|")][-1]
-		print(seriesid)
 		seriesid = "".join([i for i in seriesid if i.isdigit()])
-		print(seriesid)
 		aratn = True
 		serieinfo = True
 		for sezonas, sezonoi in seriesinfo.items():
