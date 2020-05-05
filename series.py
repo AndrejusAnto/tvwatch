@@ -208,7 +208,6 @@ else:
 		seriesid = "".join([i for i in seriesid if i.isdigit()])
 		seriesy = [i.strip() for i in series.split("|")][1]
 		seriesy = [i for i in seriesy.split("-") if i.isdigit()]
-		print(len(seriesy) < 2)
 		if len(seriesy) < 2:
 			aratn = True
 			serieinfo = True
