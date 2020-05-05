@@ -94,24 +94,24 @@ def atrupdate(tod, ed):
 
 
 watchseries = [
-	# "Attack on Titan",
-	# "Better Call Saul",
-	# "Black Mirror",
-	# "Brooklyn Nine-Nine",
-	# "Killing Eve",
-	# "Lucifer",
-	# "One Punch Man",
-	# "Star Trek: Picard",
-	# "Stranger Things",
-	# "The Blacklist",
-	# "The Boys",
-	# "The Expanse",
-	# "The Good Doctor",
-	# "The Grand Tour",
-	# "The Mandalorian",
-	# "The Orville",
-	# "The Outsider",
-	# "The Witcher",
+	"Attack on Titan",
+	"Better Call Saul",
+	"Black Mirror",
+	"Brooklyn Nine-Nine",
+	"Killing Eve",
+	"Lucifer",
+	"One Punch Man",
+	"Star Trek: Picard",
+	"Stranger Things",
+	"The Blacklist",
+	"The Boys",
+	"The Expanse",
+	"The Good Doctor",
+	"The Grand Tour",
+	"The Mandalorian",
+	"The Orville",
+	"The Outsider",
+	"The Witcher",
 	"Sherlock",
 	"True Detective",
 	"Westworld",
@@ -206,6 +206,8 @@ else:
 	for series, seriesinfo in data.items():
 		seriesid = [i.strip() for i in series.split("|")][-1]
 		seriesid = "".join([i for i in seriesid if i.isdigit()])
+		seriesy = [i.strip() for i in series.split("|")][1]
+		print(seriesy)
 		aratn = True
 		serieinfo = True
 		for sezonas, sezonoi in seriesinfo.items():
