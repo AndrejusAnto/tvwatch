@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from threading import Thread
 import imdb
 from datetime import datetime
 import json
@@ -117,118 +118,43 @@ watchseries = [
 	"Westworld",
 ]
 
-seriesdict = {}
+dictseries = {}
 atvaizdavimas = []
+threads = []
 
-if not os.path.isfile("data_file.json"):
+
+def collect_series(tv):
 	try:
-		for tv in watchseries:
-			ifserie = []
-			tvseries = ia.search_movie(tv)
-			for serie in tvseries:
-				if not ifserie:
-					seriesid = serie.movieID
-					serieinfo = ia.get_movie(seriesid)
-					serieyear = serieinfo["series years"]
-					print(f'{serieinfo["title"]} | {serieyear} | ID{seriesid}')
-					if serieinfo['kind'] == 'tv series' and tv == serieinfo['title']:
-						ifserie.append(serieinfo['title'])
-						pavad = f'{serieinfo["title"]} | {serieyear} | ID{seriesid}'
-						seriesdict[pavad] = {}
-						ia.update(serieinfo, 'episodes')
-						seasonlist = []
-						for i in serieinfo['episodes']:
-							if i >= 0:
-								seasonlist.append(i)
-						for s in list(sorted(seasonlist)):
-							listepiz = []
-							sstring = f"S{s}"
-							seriesdict[pavad][sstring] = {}
-							print("episodes number", len(serieinfo['episodes'][s]))
-							for k in serieinfo['episodes'][s]:
-								listepiz.append(k)
-							for e in listepiz:
-								estring = f"E{e}"
-								episodeid = serieinfo['episodes'][s][e].movieID
-								seriesdict[pavad][sstring][estring] = {}
-								countrydate = {}
-								realesedata = ia.get_movie_release_dates(episodeid)['data']
-								if realesedata:
-									for reldate in realesedata['raw release dates']:
-										dates = list(reversed(reldate["date"].split()))
-										sdates = " ".join(dates)
-										countryname = reldate['country'].rstrip("\n")
-										if countryname == "USA":
-											countryname = "United States"
-										if countryname == "UK":
-											countryname = "United Kingdom"
-										countrydate[countryname] = sdates
-									for k, v in countrydate.items():
-										countrydate[k] = convert_dates(v)
-									sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
-									countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
-									if countries:
-										sortedcountries = dict(sorted(countries.items(), key=lambda x: x[1]))
-										pirmasalis = list(sortedcountries.values())[0]
-										for k, v in sortedcd.copy().items():
-											if v < pirmasalis:
-												del sortedcd[k]
-
-										for k, v in sortedcd.items():
-											sortedcd[k] = convert_dates(v)
-
-										laiks = list(sortedcd.keys())
-										laikd = list(sortedcd.values())
-										for idx, v in enumerate(zip(laiks, laikd)):
-											if v[0] in serieinfo['countries']:
-												if convert_dates(v[1]) <= convert_dates(laikd[0]):
-													laiks.remove(v[0])
-													laikd.pop(idx)
-													laiks.insert(0, v[0])
-													laikd.insert(0, v[1])
-										sortedcdn = dict(zip(laiks, laikd))
-										seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = sortedcdn
-									else:
-										seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = sortedcdn
-								else:
-									seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = {}
-				else:
-					continue
-	except KeyError:
-		pass
-
-	with open("data_file.json", "w") as write_file:
-		json.dump(seriesdict, write_file, ensure_ascii=False, indent=4)
-else:
-	with open("data_file.json", "r") as read_file:
-		data = json.load(read_file)
-
-	for series, seriesinfo in data.items():
-		seriesid = [i.strip() for i in series.split("|")][-1]
-		seriesid = "".join([i for i in seriesid if i.isdigit()])
-		seriesy = [i.strip() for i in series.split("|")][1]
-		seriesy = [i for i in seriesy.split("-") if i.isdigit()]
-		if len(seriesy) < 2:
-			aratn = True
-			serieinfo = True
-			for sezonas, sezonoi in seriesinfo.items():
-				for epizodas, epizodoi in sezonoi.items():
-					for epizodopavad, epizododatos in epizodoi.items():
-						atr = atrupdate(listtod, epizododatos)
-						if not epizododatos or ((sum(atr) == 1 and len(atr) == 1) or (sum(atr) == 2 and len(atr) == 2)):
-							if aratn:
-								print(series, epizodopavad, sezonas, epizodas)
-								aratn = False
-								print("Atnaujinama")
-								serieinfo = ia.get_movie(seriesid)
-								ia.update(serieinfo, 'episodes')
-							# TODO tie serialai kurie gali buti pratesti, bet neturi datos pvz. One Punch Man
-							# pabandyti pagal imdb prad=ios pabaigos datas
-							# TODO multiproceses https://kite.com/python/docs/multiprocessing.managers.SyncManager.dict
-							print(series, epizodopavad, sezonas, epizodas)
+		seriesdict = {}
+		ifserie = []
+		tvseries = ia.search_movie(tv)
+		for serie in tvseries:
+			if not ifserie:
+				seriesid = serie.movieID
+				serieinfo = ia.get_movie(seriesid)
+				serieyear = serieinfo["series years"]
+				print(f'{serieinfo["title"]} | {serieyear} | ID{seriesid}')
+				if serieinfo['kind'] == 'tv series' and tv == serieinfo['title']:
+					ifserie.append(serieinfo['title'])
+					pavad = f'{serieinfo["title"]} | {serieyear} | ID{seriesid}'
+					seriesdict[pavad] = {}
+					ia.update(serieinfo, 'episodes')
+					seasonlist = []
+					for i in serieinfo['episodes']:
+						if i >= 0:
+							seasonlist.append(i)
+					for s in list(sorted(seasonlist)):
+						listepiz = []
+						sstring = f"S{s}"
+						seriesdict[pavad][sstring] = {}
+						print("episodes number", len(serieinfo['episodes'][s]))
+						for k in serieinfo['episodes'][s]:
+							listepiz.append(k)
+						for e in listepiz:
+							estring = f"E{e}"
+							episodeid = serieinfo['episodes'][s][e].movieID
+							seriesdict[pavad][sstring][estring] = {}
 							countrydate = {}
-							epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
-							episodeid = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])].movieID
 							realesedata = ia.get_movie_release_dates(episodeid)['data']
 							if realesedata:
 								for reldate in realesedata['raw release dates']:
@@ -264,18 +190,107 @@ else:
 												laiks.insert(0, v[0])
 												laikd.insert(0, v[1])
 									sortedcdn = dict(zip(laiks, laikd))
-									data[series][sezonas][epizodas] = {epzname: sortedcdn}
+									seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = sortedcdn
+									dictseries.update(seriesdict)
 								else:
-									data[series][sezonas][epizodas] = {epzname: sortedcdn}
+									seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = sortedcdn
+									dictseries.update(seriesdict)
 							else:
-								continue
+								seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = {}
+								dictseries.update(seriesdict)
+			else:
+				continue
+	except KeyError:
+		pass
+
+
+if not os.path.isfile("data_file.json"):
+	for tvserie in watchseries:
+		threads.append(Thread(target=collect_series, args=(tvserie,)))
+
+	for thread in threads:
+		thread.start()
+
+	for thread in threads:
+		thread.join()
+
+	with open("data_file.json", "w") as write_file:
+		json.dump(dictseries, write_file, ensure_ascii=False, indent=4)
+else:
+	with open("data_file.json", "r") as read_file:
+		data = json.load(read_file)
+
+	for series, seriesinfo in data.items():
+		seriesid = [i.strip() for i in series.split("|")][-1]
+		seriesid = "".join([i for i in seriesid if i.isdigit()])
+		seriesy = [i.strip() for i in series.split("|")][1]
+		seriesy = [i for i in seriesy.split("-") if i.isdigit()]
+		if len(seriesy) < 2:
+			aratn = True
+			serieinfo = True
+			for sezonas, sezonoi in seriesinfo.items():
+				for epizodas, epizodoi in sezonoi.items():
+					for epizodopavad, epizododatos in epizodoi.items():
+						if aratn:
+							print(series, epizodopavad, sezonas, epizodas)
+							aratn = False
+							print("Atnaujinama")
+							serieinfo = ia.get_movie(seriesid)
+							ia.update(serieinfo, 'episodes')
+						# TODO tie serialai kurie gali buti pratesti, bet neturi datos pvz. One Punch Man
+						# pabandyti pagal imdb prad=ios pabaigos datas
+						print(series, epizodopavad, sezonas, epizodas)
+						countrydate = {}
+						epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
+						episodeid = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])].movieID
+						realesedata = ia.get_movie_release_dates(episodeid)['data']
+						if realesedata:
+							for reldate in realesedata['raw release dates']:
+								dates = list(reversed(reldate["date"].split()))
+								sdates = " ".join(dates)
+								countryname = reldate['country'].rstrip("\n")
+								if countryname == "USA":
+									countryname = "United States"
+								if countryname == "UK":
+									countryname = "United Kingdom"
+								countrydate[countryname] = sdates
+							for k, v in countrydate.items():
+								countrydate[k] = convert_dates(v)
+							sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
+							countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+							if countries:
+								sortedcountries = dict(sorted(countries.items(), key=lambda x: x[1]))
+								pirmasalis = list(sortedcountries.values())[0]
+								for k, v in sortedcd.copy().items():
+									if v < pirmasalis:
+										del sortedcd[k]
+
+								for k, v in sortedcd.items():
+									sortedcd[k] = convert_dates(v)
+
+								laiks = list(sortedcd.keys())
+								laikd = list(sortedcd.values())
+								for idx, v in enumerate(zip(laiks, laikd)):
+									if v[0] in serieinfo['countries']:
+										if convert_dates(v[1]) <= convert_dates(laikd[0]):
+											laiks.remove(v[0])
+											laikd.pop(idx)
+											laiks.insert(0, v[0])
+											laikd.insert(0, v[1])
+								sortedcdn = dict(zip(laiks, laikd))
+								data[series][sezonas][epizodas] = {epzname: sortedcdn}
+							else:
+								data[series][sezonas][epizodas] = {epzname: sortedcdn}
 						else:
 							continue
+						# else:
+						# 	continue
 		else:
 			continue
 
 	with open("data_file.json", "w") as write_file:
 		json.dump(data, write_file, ensure_ascii=False, indent=4)
+
 
 with open("data_file.json", "r") as read_file:
 	data = json.load(read_file)
@@ -309,8 +324,6 @@ for sp in data.items():
 					lepdict[sp[0]].append(lepinfo)
 	if lepdict[sp[0]]:
 		atvaizdavimas.append(lepdict)
-
-# print("atvaizdavimas", atvaizdavimas)
 
 for i in atvaizdavimas:
 	for k, v in i.items():
