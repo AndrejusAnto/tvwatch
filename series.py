@@ -118,7 +118,7 @@ watchseries = [
 ]
 
 seriesdict = {}
-duomenys = []
+atvaizdavimas = []
 
 if not os.path.isfile("data_file.json"):
 	try:
@@ -280,7 +280,7 @@ else:
 with open("data_file.json", "r") as read_file:
 	data = json.load(read_file)
 
-duomenys = []
+atvaizdavimas = []
 for sp in data.items():
 	lepdict = {}
 	lepdict[sp[0]] = []
@@ -308,11 +308,11 @@ for sp in data.items():
 					lepinfo.append(ldatos)
 					lepdict[sp[0]].append(lepinfo)
 	if lepdict[sp[0]]:
-		duomenys.append(lepdict)
+		atvaizdavimas.append(lepdict)
 
-# print("duomenys", duomenys)
+# print("atvaizdavimas", atvaizdavimas)
 
-for i in duomenys:
+for i in atvaizdavimas:
 	for k, v in i.items():
 		print('---------------------------------------------')
 		print('---------------------------------------------')
