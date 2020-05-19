@@ -243,8 +243,7 @@ else:
 								print("Atnaujinama")
 								serieinfo = ia.get_movie(seriesid)
 								ia.update(serieinfo, 'episodes')
-							# TODO tie serialai kurie gali buti pratesti, bet neturi datos pvz. One Punch Man
-							# pabandyti pagal imdb prad=ios pabaigos datas
+
 							print(series, epizodopavad, sezonas, epizodas)
 							countrydate = {}
 							epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
