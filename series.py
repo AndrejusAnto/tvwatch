@@ -236,6 +236,7 @@ else:
 			for sezonas, sezonoi in seriesinfo.items():
 				for epizodas, epizodoi in sezonoi.items():
 					for epizodopavad, epizododatos in epizodoi.items():
+						atr = pirmasal(listtod, epizododatos)
 						# if not epizododatos:
 						# 	listtuscias.append(int(sezonas[1:]))
 						# atr = pirmasal(listtod, epizododatos)
