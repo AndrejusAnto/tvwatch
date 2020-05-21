@@ -116,11 +116,12 @@ atvaizdavimas = []
 threads = []
 
 
-def atrupdate(tod, ed):
+def pirmasal(tod, ed):
 	if ed != {}:
 		pirmasalis = list(ed.keys())[0]
 		data = convert_dates(ed[pirmasalis])
-		return [1 if x == y else 0 for x, y in zip(data, tod) if len(data) < 3]
+		# return [1 if x == y else 0 for x, y in zip(data, tod) if len(data) < 3]
+		return data
 
 
 def collect_series(tv):
@@ -224,23 +225,36 @@ else:
 		seriesy = [i.strip() for i in series.split("|")][1]
 		seriesy = [i for i in seriesy.split("-") if i.isdigit()]
 		if len(seriesy) < 2:
+			sezatn = [int(x[1:]) for x in seriesinfo.keys()]
+			print(series, sezatn)
 			seriesid = [i.strip() for i in series.split("|")][-1]
 			seriesid = "".join([i for i in seriesid if i.isdigit()])
 			aratn = True
 			serieinfo = True
+			# listtuscias = []
+			# listnetuscias = []
 			for sezonas, sezonoi in seriesinfo.items():
 				for epizodas, epizodoi in sezonoi.items():
 					for epizodopavad, epizododatos in epizodoi.items():
-						atr = atrupdate(listtod, epizododatos)
-						if not epizododatos or ((sum(atr) == 1 and len(atr) == 1) or (sum(atr) == 2 and len(atr) == 2)):
+						# if not epizododatos:
+						# 	listtuscias.append(int(sezonas[1:]))
+						# atr = pirmasal(listtod, epizododatos)
+						# if atr is not None:
+						# 	if listtod >= atr:
+						# 		listnetuscias.append(int(sezonas[1:]))
+						# print(listtuscias, listnetuscias)
+
+						if (not epizododatos or (listtod >= atr)):
 							if aratn:
 								print(series, epizodopavad, sezonas, epizodas)
 								aratn = False
 								print("Atnaujinama")
 								serieinfo = ia.get_movie(seriesid)
 								ia.update(serieinfo, 'episodes')
-								sezlist = [s for s in sorted(serieinfo['episodes'].keys()) if (s > 0 and s >= int(sezonas[1:]))]
-								epzsk = [len(serieinfo['episodes'][x]) for x in sezlist]
+								# sezlist = sorted(serieinfo['episodes'].keys())
+								sezlist = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
+								# epzsk = [len(serieinfo['episodes'][x]) for x in sezlist]
+								print("sezlist", sezlist)
 
 							print("po", series, epizodopavad, sezonas, epizodas)
 							countrydate = {}
@@ -287,7 +301,7 @@ else:
 							else:
 								continue
 						else:
-							pass
+							continue
 		else:
 			continue
 
