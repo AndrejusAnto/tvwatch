@@ -353,18 +353,8 @@ else:
 															laiks.insert(0, v[0])
 															laikd.insert(0, v[1])
 												sortedcdn = dict(zip(laiks, laikd))
-												
-												# laikdata = {epzname: sortedcdn}
-												# laikepz[estring] = laikdata
-												# laiksez[sstring] = laikepz
 												data[series][sezonas][epizodas].update({epzname: sortedcdn})
 											else:
-												# sstring = f"S{s}"
-												# estring = f"E{ee}"
-												# laikdata = {epzname: sortedcdn}
-												# laikepz[estring] = laikdata
-												# laiksez[sstring] = laikepz
-												# data[series].update(laiksez)
 												data[series][sezonas][epizodas].update({epzname: sortedcdn})
 							else:
 								# if len(atr) == 0 salyga
