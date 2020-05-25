@@ -7,6 +7,7 @@ from datetime import datetime
 import json
 import calendar
 import os
+import copy
 
 tod = datetime.today()
 listtod = [tod.year, tod.month, tod.day]
@@ -121,6 +122,8 @@ def pirmasal(tod, ed):
 		pirmasalis = list(ed.keys())[0]
 		data = convert_dates(ed[pirmasalis])
 		return data
+	else:
+		return ed
 
 
 def collect_series(tv):
@@ -220,14 +223,16 @@ else:
 	with open("data_file.json", "r") as read_file:
 		data = json.load(read_file)
 
-	for series, seriesinfo in data.copy().items():
+	for series, seriesinfo in copy.deepcopy(data).items():
 		seriesy = [i.strip() for i in series.split("|")][1]
 		seriesy = [i for i in seriesy.split("-") if i.isdigit()]
 		if len(seriesy) < 2:
 			sezsk = [int(x[1:]) for x in seriesinfo.keys()]
-			sezatn = True
-			laiksezatn = []
-			laiksezatn1 = []
+			sezatn = []
+			epzsk = []
+			lygu3 = []
+			nelygu3 = []
+			didesne = []
 			seriesid = [i.strip() for i in series.split("|")][-1]
 			seriesid = "".join([i for i in seriesid if i.isdigit()])
 			aratn = True
@@ -235,133 +240,371 @@ else:
 			for sezonas, sezonoi in seriesinfo.items():
 				for epizodas, epizodoi in sezonoi.items():
 					for epizodopavad, epizododatos in epizodoi.items():
-						if not epizododatos:
-							laiksezatn.append(int(sezonas[1:]))
-							print("------------------")
-							print("laiksezatn", laiksezatn)
-							if int(sezonas[1:]) in laiksezatn:
+						atr = pirmasal(listtod, epizododatos)
+						if "Episode #" in epizodopavad:
+							if len(atr) == 0:
 								if aratn:
 									print(series)
 									aratn = False
-									print("Atnaujinama")
+									print("Atnaujinama if len(atr) == 0")
 									serieinfo = ia.get_movie(seriesid)
 									ia.update(serieinfo, 'episodes')
 									sezatn = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
-									epzsk = [len(serieinfo['episodes'][x]) for x in sezatn]
-									print("epzsk", epzsk)
+									if sezsk != sezatn:
+										atjsez = list(set(sezatn).difference(set(sezsk)))
+										epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
+										for s, e in zip(atjsez, epzsk):
+											laikepz = {}
+											laiksez = {}
+											for ee in range(1, e + 1):
+												laikdata = {}
+												countrydate = {}
+												epzname = serieinfo['episodes'][s][ee]['title']
+												episodeid = serieinfo['episodes'][s][ee].movieID
+												print(epzname, episodeid)
+												realesedata = ia.get_movie_release_dates(episodeid)['data']
+												if realesedata:
+													for reldate in realesedata['raw release dates']:
+														dates = list(reversed(reldate["date"].split()))
+														sdates = " ".join(dates)
+														countryname = reldate['country'].rstrip("\n")
+														if countryname == "USA":
+															countryname = "United States"
+														if countryname == "UK":
+															countryname = "United Kingdom"
+														countrydate[countryname] = sdates
+													for k, v in countrydate.items():
+														countrydate[k] = convert_dates(v)
+													# print(countrydate)
+													sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
+													print(sortedcd)
+													countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+													if countries:
+														sortedcountries = dict(sorted(countries.items(), key=lambda x: x[1]))
+														pirmasalis = list(sortedcountries.values())[0]
+														for k, v in sortedcd.copy().items():
+															if v < pirmasalis:
+																del sortedcd[k]
 
-							print("po", series, epizodopavad, sezonas, epizodas)
-							countrydate = {}
-							epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
-							episodeid = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])].movieID
-							realesedata = ia.get_movie_release_dates(episodeid)['data']
-							if realesedata:
-								for reldate in realesedata['raw release dates']:
-									dates = list(reversed(reldate["date"].split()))
-									sdates = " ".join(dates)
-									countryname = reldate['country'].rstrip("\n")
-									if countryname == "USA":
-										countryname = "United States"
-									if countryname == "UK":
-										countryname = "United Kingdom"
-									countrydate[countryname] = sdates
-								for k, v in countrydate.items():
-									countrydate[k] = convert_dates(v)
-								sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
-								countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
-								if countries:
-									sortedcountries = dict(sorted(countries.items(), key=lambda x: x[1]))
-									pirmasalis = list(sortedcountries.values())[0]
-									for k, v in sortedcd.copy().items():
-										if v < pirmasalis:
-											del sortedcd[k]
+														for k, v in sortedcd.items():
+															sortedcd[k] = convert_dates(v)
 
-									for k, v in sortedcd.items():
-										sortedcd[k] = convert_dates(v)
+														laiks = list(sortedcd.keys())
+														laikd = list(sortedcd.values())
+														for idx, v in enumerate(zip(laiks, laikd)):
+															if v[0] in serieinfo['countries']:
+																if convert_dates(v[1]) <= convert_dates(laikd[0]):
+																	laiks.remove(v[0])
+																	laikd.pop(idx)
+																	laiks.insert(0, v[0])
+																	laikd.insert(0, v[1])
+														sortedcdn = dict(zip(laiks, laikd))
+														sstring = f"S{s}"
+														estring = f"E{ee}"
+														laikdata = {epzname: sortedcdn}
+														laikepz[estring] = laikdata
+														laiksez[sstring] = laikepz
+														data[series].update(laiksez)
+													else:
+														sstring = f"S{s}"
+														estring = f"E{ee}"
+														laikdata = {epzname: sortedcdn}
+														laikepz[estring] = laikdata
+														laiksez[sstring] = laikepz
+														data[series].update(laiksez)
+									else:
+										countrydate = {}
+										epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
+										episodeid = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])].movieID
+										realesedata = ia.get_movie_release_dates(episodeid)['data']
+										if realesedata:
+											for reldate in realesedata['raw release dates']:
+												dates = list(reversed(reldate["date"].split()))
+												sdates = " ".join(dates)
+												countryname = reldate['country'].rstrip("\n")
+												if countryname == "USA":
+													countryname = "United States"
+												if countryname == "UK":
+													countryname = "United Kingdom"
+												countrydate[countryname] = sdates
+											for k, v in countrydate.items():
+												countrydate[k] = convert_dates(v)
+											# print(countrydate)
+											sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
+											print(sortedcd)
+											countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+											if countries:
+												sortedcountries = dict(sorted(countries.items(), key=lambda x: x[1]))
+												pirmasalis = list(sortedcountries.values())[0]
+												for k, v in sortedcd.copy().items():
+													if v < pirmasalis:
+														del sortedcd[k]
 
-									laiks = list(sortedcd.keys())
-									laikd = list(sortedcd.values())
-									for idx, v in enumerate(zip(laiks, laikd)):
-										if v[0] in serieinfo['countries']:
-											if convert_dates(v[1]) <= convert_dates(laikd[0]):
-												laiks.remove(v[0])
-												laikd.pop(idx)
-												laiks.insert(0, v[0])
-												laikd.insert(0, v[1])
-									sortedcdn = dict(zip(laiks, laikd))
-									data[series][sezonas][epizodas] = {epzname: sortedcdn}
+												for k, v in sortedcd.items():
+													sortedcd[k] = convert_dates(v)
+
+												laiks = list(sortedcd.keys())
+												laikd = list(sortedcd.values())
+												for idx, v in enumerate(zip(laiks, laikd)):
+													if v[0] in serieinfo['countries']:
+														if convert_dates(v[1]) <= convert_dates(laikd[0]):
+															laiks.remove(v[0])
+															laikd.pop(idx)
+															laiks.insert(0, v[0])
+															laikd.insert(0, v[1])
+												sortedcdn = dict(zip(laiks, laikd))
+												
+												# laikdata = {epzname: sortedcdn}
+												# laikepz[estring] = laikdata
+												# laiksez[sstring] = laikepz
+												data[series][sezonas][epizodas].update({epzname: sortedcdn})
+											else:
+												# sstring = f"S{s}"
+												# estring = f"E{ee}"
+												# laikdata = {epzname: sortedcdn}
+												# laikepz[estring] = laikdata
+												# laiksez[sstring] = laikepz
+												# data[series].update(laiksez)
+												data[series][sezonas][epizodas].update({epzname: sortedcdn})
+							else:
+								# if len(atr) == 0 salyga
+								if (listtod[0] >= atr[0]) and (listtod > atr):
+									if aratn:
+										print("bbbb", sezonas, epizodas, series)
+										aratn = False
+										print("Atnaujinama if len(atr) == 0")
+										serieinfo = ia.get_movie(seriesid)
+										ia.update(serieinfo, 'episodes')
+										sezatn = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
+										if sezsk != sezatn:
+											print("taip")
+											atjsez = list(set(sezatn).difference(set(sezsk)))
+											epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
+											for s, e in zip(atjsez, epzsk):
+												laikepz = {}
+												laiksez = {}
+												for ee in range(1, e + 1):
+													laikdata = {}
+													countrydate = {}
+													epzname = serieinfo['episodes'][s][ee]['title']
+													episodeid = serieinfo['episodes'][s][ee].movieID
+													print(epzname, episodeid)
+												# print("epzname", epzname, episodeid)
+													realesedata = ia.get_movie_release_dates(episodeid)['data']
+													if realesedata:
+														for reldate in realesedata['raw release dates']:
+															dates = list(reversed(reldate["date"].split()))
+															sdates = " ".join(dates)
+															countryname = reldate['country'].rstrip("\n")
+															if countryname == "USA":
+																countryname = "United States"
+															if countryname == "UK":
+																countryname = "United Kingdom"
+															countrydate[countryname] = sdates
+														for k, v in countrydate.items():
+															countrydate[k] = convert_dates(v)
+														# print(countrydate)
+														sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
+														print(sortedcd)
+														countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+														if countries:
+															sortedcountries = dict(sorted(countries.items(), key=lambda x: x[1]))
+															pirmasalis = list(sortedcountries.values())[0]
+															for k, v in sortedcd.copy().items():
+																if v < pirmasalis:
+																	del sortedcd[k]
+
+															for k, v in sortedcd.items():
+																sortedcd[k] = convert_dates(v)
+
+															laiks = list(sortedcd.keys())
+															laikd = list(sortedcd.values())
+															for idx, v in enumerate(zip(laiks, laikd)):
+																if v[0] in serieinfo['countries']:
+																	if convert_dates(v[1]) <= convert_dates(laikd[0]):
+																		laiks.remove(v[0])
+																		laikd.pop(idx)
+																		laiks.insert(0, v[0])
+																		laikd.insert(0, v[1])
+															sortedcdn = dict(zip(laiks, laikd))
+															sstring = f"S{s}"
+															estring = f"E{ee}"
+															laikdata = {epzname: sortedcdn}
+															laikepz[estring] = laikdata
+															laiksez[sstring] = laikepz
+															data[series].update(laiksez)
+														else:
+															sstring = f"S{s}"
+															estring = f"E{ee}"
+															laikdata = {epzname: sortedcdn}
+															laikepz[estring] = laikdata
+															laiksez[sstring] = laikepz
+															data[series].update(laiksez)
+										else:
+											epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
+											data[series][sezonas][epizodas] = {epzname: epizododatos}
 								else:
-									data[series][sezonas][epizodas] = {epzname: sortedcdn}
-						# else:
-							# Boys su 2 sezonais tusciais
-							# atr = pirmasal(listtod, epizododatos)
-							# # if int(sezonas[1:]) == sezsk[-1]:
-							# if listtod >= atr:
-							# 	laiksezatn1.append(int(sezonas[1:]))
-							# 	if int(sezonas[1:]) in laiksezatn1:
-							# 		if aratn:
-							# 			print(series)
-							# 			aratn = False
-							# 			print("Atnaujinama")
-							# 			serieinfo = ia.get_movie(seriesid)
-							# 			ia.update(serieinfo, 'episodes')
-							# 			sezatn = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
-							# 			print("sezatn", sezatn)
+									continue
+						else:
+							# if "Episode #" in epizodopavad salyga
+							if int(sezonas[1:]) == sezsk[-1]:
+								if len(atr) == 0:
+									if aratn:
+										print(series)
+										aratn = False
+										print("Atnaujinama int(sezonas[1:]) == sezsk[-1]")
+										serieinfo = ia.get_movie(seriesid)
+										ia.update(serieinfo, 'episodes')
+										sezatn = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
+										if sezsk != sezatn:
+											atjsez = list(set(sezatn).difference(set(sezsk)))
+											epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
+											for s, e in zip(atjsez, epzsk):
+												laikepz = {}
+												laiksez = {}
+												for ee in range(1, e + 1):
+													laikdata = {}
+													countrydate = {}
+													epzname = serieinfo['episodes'][s][ee]['title']
+													episodeid = serieinfo['episodes'][s][ee].movieID
+													print(epzname, episodeid)
+												# print("epzname", epzname, episodeid)
+													realesedata = ia.get_movie_release_dates(episodeid)['data']
+													if realesedata:
+														for reldate in realesedata['raw release dates']:
+															dates = list(reversed(reldate["date"].split()))
+															sdates = " ".join(dates)
+															countryname = reldate['country'].rstrip("\n")
+															if countryname == "USA":
+																countryname = "United States"
+															if countryname == "UK":
+																countryname = "United Kingdom"
+															countrydate[countryname] = sdates
+														for k, v in countrydate.items():
+															countrydate[k] = convert_dates(v)
+														# print(countrydate)
+														sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
+														print(sortedcd)
+														countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+														if countries:
+															sortedcountries = dict(sorted(countries.items(), key=lambda x: x[1]))
+															pirmasalis = list(sortedcountries.values())[0]
+															for k, v in sortedcd.copy().items():
+																if v < pirmasalis:
+																	del sortedcd[k]
 
-							# 		# if sezsk != sezatn:
-							# 		print("sezsk == sezatn")
-							# 		print("po", series, epizodopavad, sezonas, epizodas)
-							# 		countrydate = {}
-							# 		epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
-							# 		episodeid = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])].movieID
-							# 		realesedata = ia.get_movie_release_dates(episodeid)['data']
-							# 		if realesedata:
-							# 			for reldate in realesedata['raw release dates']:
-							# 				dates = list(reversed(reldate["date"].split()))
-							# 				sdates = " ".join(dates)
-							# 				countryname = reldate['country'].rstrip("\n")
-							# 				if countryname == "USA":
-							# 					countryname = "United States"
-							# 				if countryname == "UK":
-							# 					countryname = "United Kingdom"
-							# 				countrydate[countryname] = sdates
-							# 			for k, v in countrydate.items():
-							# 				countrydate[k] = convert_dates(v)
-							# 			sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
-							# 			countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
-							# 			if countries:
-							# 				sortedcountries = dict(sorted(countries.items(), key=lambda x: x[1]))
-							# 				pirmasalis = list(sortedcountries.values())[0]
-							# 				for k, v in sortedcd.copy().items():
-							# 					if v < pirmasalis:
-							# 						del sortedcd[k]
+															for k, v in sortedcd.items():
+																sortedcd[k] = convert_dates(v)
 
-							# 				for k, v in sortedcd.items():
-							# 					sortedcd[k] = convert_dates(v)
+															laiks = list(sortedcd.keys())
+															laikd = list(sortedcd.values())
+															for idx, v in enumerate(zip(laiks, laikd)):
+																if v[0] in serieinfo['countries']:
+																	if convert_dates(v[1]) <= convert_dates(laikd[0]):
+																		laiks.remove(v[0])
+																		laikd.pop(idx)
+																		laiks.insert(0, v[0])
+																		laikd.insert(0, v[1])
+															sortedcdn = dict(zip(laiks, laikd))
+															sstring = f"S{s}"
+															estring = f"E{ee}"
+															laikdata = {epzname: sortedcdn}
+															laikepz[estring] = laikdata
+															laiksez[sstring] = laikepz
+															data[series].update(laiksez)
+														else:
+															sstring = f"S{s}"
+															estring = f"E{ee}"
+															laikdata = {epzname: sortedcdn}
+															laikepz[estring] = laikdata
+															laiksez[sstring] = laikepz
+															data[series].update(laiksez)
+										else:
+											# if sezsk != sezatn salyga
+											continue
+								else:
+									if listtod[0] >= atr[0]:
+										if aratn:
+											print(series)
+											aratn = False
+											print("Atnaujinama int(sezonas[1:]) == sezsk[-1]")
+											serieinfo = ia.get_movie(seriesid)
+											ia.update(serieinfo, 'episodes')
+											sezatn = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
+											if sezsk != sezatn:
+												atjsez = list(set(sezatn).difference(set(sezsk)))
+												epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
+												for s, e in zip(atjsez, epzsk):
+													laikepz = {}
+													laiksez = {}
+													for ee in range(1, e + 1):
+														laikdata = {}
+														countrydate = {}
+														epzname = serieinfo['episodes'][s][ee]['title']
+														episodeid = serieinfo['episodes'][s][ee].movieID
+														print(epzname, episodeid)
+													# print("epzname", epzname, episodeid)
+														realesedata = ia.get_movie_release_dates(episodeid)['data']
+														if realesedata:
+															for reldate in realesedata['raw release dates']:
+																dates = list(reversed(reldate["date"].split()))
+																sdates = " ".join(dates)
+																countryname = reldate['country'].rstrip("\n")
+																if countryname == "USA":
+																	countryname = "United States"
+																if countryname == "UK":
+																	countryname = "United Kingdom"
+																countrydate[countryname] = sdates
+															for k, v in countrydate.items():
+																countrydate[k] = convert_dates(v)
+															# print(countrydate)
+															sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
+															print(sortedcd)
+															countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+															if countries:
+																sortedcountries = dict(sorted(countries.items(), key=lambda x: x[1]))
+																pirmasalis = list(sortedcountries.values())[0]
+																for k, v in sortedcd.copy().items():
+																	if v < pirmasalis:
+																		del sortedcd[k]
 
-							# 				laiks = list(sortedcd.keys())
-							# 				laikd = list(sortedcd.values())
-							# 				for idx, v in enumerate(zip(laiks, laikd)):
-							# 					if v[0] in serieinfo['countries']:
-							# 						if convert_dates(v[1]) <= convert_dates(laikd[0]):
-							# 							laiks.remove(v[0])
-							# 							laikd.pop(idx)
-							# 							laiks.insert(0, v[0])
-							# 							laikd.insert(0, v[1])
-							# 				sortedcdn = dict(zip(laiks, laikd))
-							# 				data[series][sezonas][epizodas] = {epzname: sortedcdn}
-							# 			else:
-							# 				data[series][sezonas][epizodas] = {epzname: sortedcdn}
-							# 		else:
-							# 			continue
-							# 	else:
-							# 		continue
+																for k, v in sortedcd.items():
+																	sortedcd[k] = convert_dates(v)
+
+																laiks = list(sortedcd.keys())
+																laikd = list(sortedcd.values())
+																for idx, v in enumerate(zip(laiks, laikd)):
+																	if v[0] in serieinfo['countries']:
+																		if convert_dates(v[1]) <= convert_dates(laikd[0]):
+																			laiks.remove(v[0])
+																			laikd.pop(idx)
+																			laiks.insert(0, v[0])
+																			laikd.insert(0, v[1])
+																sortedcdn = dict(zip(laiks, laikd))
+																sstring = f"S{s}"
+																estring = f"E{ee}"
+																laikdata = {epzname: sortedcdn}
+																laikepz[estring] = laikdata
+																laiksez[sstring] = laikepz
+																data[series].update(laiksez)
+															else:
+																sstring = f"S{s}"
+																estring = f"E{ee}"
+																laikdata = {epzname: sortedcdn}
+																laikepz[estring] = laikdata
+																laiksez[sstring] = laikepz
+																data[series].update(laiksez)
+											else:
+												# if sezsk != sezatn salyga
+												continue
+							else:
+								# if int(sezonas[1:]) == sezsk[-1] salyga
+								continue
 		else:
 			continue
 
 	with open("data_file.json", "w") as write_file:
 		json.dump(data, write_file, ensure_ascii=False, indent=4)
-
 
 with open("data_file.json", "r") as read_file:
 	data = json.load(read_file)
