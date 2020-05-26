@@ -329,7 +329,6 @@ else:
 												countrydate[countryname] = sdates
 											for k, v in countrydate.items():
 												countrydate[k] = convert_dates(v)
-											# print(countrydate)
 											sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
 											print(sortedcd)
 											countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
@@ -360,7 +359,7 @@ else:
 								# if len(atr) == 0 salyga
 								if (listtod[0] >= atr[0]) and (listtod > atr):
 									if aratn:
-										print("bbbb", sezonas, epizodas, series)
+										print(sezonas, epizodas, series)
 										aratn = False
 										print("Atnaujinama if len(atr) == 0")
 										serieinfo = ia.get_movie(seriesid)
@@ -433,6 +432,16 @@ else:
 										else:
 											epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
 											data[series][sezonas][epizodas] = {epzname: epizododatos}
+								elif (listtod[0] == atr[0]) and (listtod < atr):
+									# asdasdasd
+									if aratn:
+										print(series)
+										aratn = False
+										print("Atnaujinama if len(atr) == 0")
+										serieinfo = ia.get_movie(seriesid)
+										ia.update(serieinfo, 'episodes')
+										epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
+										data[series][sezonas][epizodas] = {epzname: epizododatos}
 								else:
 									continue
 						else:
