@@ -230,9 +230,6 @@ else:
 			sezsk = [int(x[1:]) for x in seriesinfo.keys()]
 			sezatn = []
 			epzsk = []
-			lygu3 = []
-			nelygu3 = []
-			didesne = []
 			seriesid = [i.strip() for i in series.split("|")][-1]
 			seriesid = "".join([i for i in seriesid if i.isdigit()])
 			aratn = True
@@ -275,7 +272,6 @@ else:
 														countrydate[countryname] = sdates
 													for k, v in countrydate.items():
 														countrydate[k] = convert_dates(v)
-													# print(countrydate)
 													sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
 													print(sortedcd)
 													countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
@@ -378,7 +374,6 @@ else:
 													epzname = serieinfo['episodes'][s][ee]['title']
 													episodeid = serieinfo['episodes'][s][ee].movieID
 													print(epzname, episodeid)
-												# print("epzname", epzname, episodeid)
 													realesedata = ia.get_movie_release_dates(episodeid)['data']
 													if realesedata:
 														for reldate in realesedata['raw release dates']:
@@ -392,7 +387,6 @@ else:
 															countrydate[countryname] = sdates
 														for k, v in countrydate.items():
 															countrydate[k] = convert_dates(v)
-														# print(countrydate)
 														sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
 														print(sortedcd)
 														countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
@@ -433,11 +427,11 @@ else:
 											epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
 											data[series][sezonas][epizodas] = {epzname: epizododatos}
 								elif (listtod[0] == atr[0]) and (listtod < atr):
-									# asdasdasd
+									print("listtod[0] == atr[0]) and (listtod < atr")
 									if aratn:
 										print(series)
 										aratn = False
-										print("Atnaujinama if len(atr) == 0")
+										# print("Atnaujinama if len(atr) == 0")
 										serieinfo = ia.get_movie(seriesid)
 										ia.update(serieinfo, 'episodes')
 										epzname = serieinfo['episodes'][int(sezonas[1:])][int(epizodas[1:])]['title']
@@ -467,7 +461,6 @@ else:
 													epzname = serieinfo['episodes'][s][ee]['title']
 													episodeid = serieinfo['episodes'][s][ee].movieID
 													print(epzname, episodeid)
-												# print("epzname", epzname, episodeid)
 													realesedata = ia.get_movie_release_dates(episodeid)['data']
 													if realesedata:
 														for reldate in realesedata['raw release dates']:
@@ -481,7 +474,6 @@ else:
 															countrydate[countryname] = sdates
 														for k, v in countrydate.items():
 															countrydate[k] = convert_dates(v)
-														# print(countrydate)
 														sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
 														print(sortedcd)
 														countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
@@ -542,7 +534,6 @@ else:
 														epzname = serieinfo['episodes'][s][ee]['title']
 														episodeid = serieinfo['episodes'][s][ee].movieID
 														print(epzname, episodeid)
-													# print("epzname", epzname, episodeid)
 														realesedata = ia.get_movie_release_dates(episodeid)['data']
 														if realesedata:
 															for reldate in realesedata['raw release dates']:
@@ -556,7 +547,6 @@ else:
 																countrydate[countryname] = sdates
 															for k, v in countrydate.items():
 																countrydate[k] = convert_dates(v)
-															# print(countrydate)
 															sortedcd = dict(sorted(countrydate.items(), key=lambda x: x[1]))
 															print(sortedcd)
 															countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
