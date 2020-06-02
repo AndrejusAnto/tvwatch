@@ -142,11 +142,8 @@ def collect_series(tv):
 					pavad = f'{serieinfo["title"]} | {serieyear} | ID{seriesid}'
 					seriesdict[pavad] = {}
 					ia.update(serieinfo, 'episodes')
-					seasonlist = []
-					for i in serieinfo['episodes']:
-						if i >= 0:
-							seasonlist.append(i)
-					for s in list(sorted(seasonlist)):
+					seasonlist = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
+					for s in seasonlist:
 						listepiz = []
 						sstring = f"S{s}"
 						seriesdict[pavad][sstring] = {}
