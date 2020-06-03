@@ -144,20 +144,17 @@ def collect_series(tv):
 					ia.update(serieinfo, 'episodes')
 					seasonlist = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
 					for s in seasonlist:
-						listepiz = []
 						sstring = f"S{s}"
 						seriesdict[pavad][sstring] = {}
 						print("episodes number", len(serieinfo['episodes'][s]))
-						for k in serieinfo['episodes'][s]:
-							listepiz.append(k)
-						for e in listepiz:
+						for e in serieinfo['episodes'][s]:
 							estring = f"E{e}"
 							episodeid = serieinfo['episodes'][s][e].movieID
 							seriesdict[pavad][sstring][estring] = {}
 							countrydate = {}
-							realesedata = ia.get_movie_release_dates(episodeid)['data']
-							if realesedata:
-								for reldate in realesedata['raw release dates']:
+							releasedate = ia.get_movie_release_dates(episodeid)['data']
+							if releasedate:
+								for reldate in releasedate['raw release dates']:
 									dates = list(reversed(reldate["date"].split()))
 									sdates = " ".join(dates)
 									countryname = reldate['country'].rstrip("\n")
@@ -261,11 +258,11 @@ else:
 													countrydate = {}
 													epzname = serieinfo['episodes'][s][ee]['title']
 													episodeid = serieinfo['episodes'][s][ee].movieID
-													realesedata = ia.get_movie_release_dates(episodeid)['data']
+													releasedate = ia.get_movie_release_dates(episodeid)['data']
 													sstring = f"S{s}"
 													estring = f"E{ee}"
-													if realesedata:
-														for reldate in realesedata['raw release dates']:
+													if releasedate:
+														for reldate in releasedate['raw release dates']:
 															dates = list(reversed(reldate["date"].split()))
 															sdates = " ".join(dates)
 															countryname = reldate['country'].rstrip("\n")
@@ -323,11 +320,11 @@ else:
 													countrydate = {}
 													epzname = serieinfo['episodes'][s][ee]['title']
 													episodeid = serieinfo['episodes'][s][ee].movieID
-													realesedata = ia.get_movie_release_dates(episodeid)['data']
+													releasedate = ia.get_movie_release_dates(episodeid)['data']
 													sstring = f"S{s}"
 													estring = f"E{ee}"
-													if realesedata:
-														for reldate in realesedata['raw release dates']:
+													if releasedate:
+														for reldate in releasedate['raw release dates']:
 															dates = list(reversed(reldate["date"].split()))
 															sdates = " ".join(dates)
 															countryname = reldate['country'].rstrip("\n")
@@ -388,11 +385,11 @@ else:
 															countrydate = {}
 															epzname = serieinfo['episodes'][s][ee]['title']
 															episodeid = serieinfo['episodes'][s][ee].movieID
-															realesedata = ia.get_movie_release_dates(episodeid)['data']
+															releasedate = ia.get_movie_release_dates(episodeid)['data']
 															sstring = f"S{s}"
 															estring = f"E{ee}"
-															if realesedata:
-																for reldate in realesedata['raw release dates']:
+															if releasedate:
+																for reldate in releasedate['raw release dates']:
 																	dates = list(reversed(reldate["date"].split()))
 																	sdates = " ".join(dates)
 																	countryname = reldate['country'].rstrip("\n")
@@ -450,11 +447,11 @@ else:
 															countrydate = {}
 															epzname = serieinfo['episodes'][s][ee]['title']
 															episodeid = serieinfo['episodes'][s][ee].movieID
-															realesedata = ia.get_movie_release_dates(episodeid)['data']
+															releasedate = ia.get_movie_release_dates(episodeid)['data']
 															sstring = f"S{s}"
 															estring = f"E{ee}"
-															if realesedata:
-																for reldate in realesedata['raw release dates']:
+															if releasedate:
+																for reldate in releasedate['raw release dates']:
 																	dates = list(reversed(reldate["date"].split()))
 																	sdates = " ".join(dates)
 																	countryname = reldate['country'].rstrip("\n")
@@ -516,9 +513,9 @@ else:
 													countrydate = {}
 													epzname = serieinfo['episodes'][s][ee]['title']
 													episodeid = serieinfo['episodes'][s][ee].movieID
-													realesedata = ia.get_movie_release_dates(episodeid)['data']
-													if realesedata:
-														for reldate in realesedata['raw release dates']:
+													releasedate = ia.get_movie_release_dates(episodeid)['data']
+													if releasedate:
+														for reldate in releasedate['raw release dates']:
 															dates = list(reversed(reldate["date"].split()))
 															sdates = " ".join(dates)
 															countryname = reldate['country'].rstrip("\n")
