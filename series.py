@@ -262,6 +262,7 @@ if not os.path.isfile("data_file.json"):
 		thread.join()
 
 	with open("data_file.json", "w") as write_file:
+		dictseries = dict(sorted(dictseries.items()))
 		json.dump(dictseries, write_file, ensure_ascii=False, indent=4)
 else:
 	with open("data_file.json", "r") as read_file:
