@@ -237,14 +237,14 @@ def main():
 			seriesy = [i.strip() for i in series.split("|")][1]
 			seriesy = [i for i in seriesy.split("-") if i.isdigit()]
 			if len(seriesy) < 2:
-				sezsk = [int(x[1:]) for x in seriesinfo.keys()]
+				aratn = True
+				serieinfo = True
 				sezatn = []
 				epzsk = []
 				pirmasepatj = []
 				seriesid = [i.strip() for i in series.split("|")][-1]
 				seriesid = "".join([i for i in seriesid if i.isdigit()])
-				aratn = True
-				serieinfo = True
+				sezsk = [int(x[1:]) for x in seriesinfo.keys()]
 				for sezonas, sezonoi in seriesinfo.items():
 					for epizodas, epizodoi in sezonoi.items():
 						for epizodopavad, epizododatos in epizodoi.items():
