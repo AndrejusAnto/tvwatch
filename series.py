@@ -214,293 +214,300 @@ def collect_series(tv):
 
 # def update_series(a, s, si):
 
+def main():
+	# global dictseries
+	if not os.path.isfile("data_file.json"):
+		for tvserie in watchseries:
+			threads.append(Thread(target=collect_series, args=(tvserie,)))
 
-if not os.path.isfile("data_file.json"):
-	for tvserie in watchseries:
-		threads.append(Thread(target=collect_series, args=(tvserie,)))
+		for thread in threads:
+			thread.start()
 
-	for thread in threads:
-		thread.start()
+		for thread in threads:
+			thread.join()
 
-	for thread in threads:
-		thread.join()
+		with open("data_file.json", "w") as write_file:
+			dictseriesn = dict(sorted(dictseries.items()))
+			json.dump(dictseriesn, write_file, ensure_ascii=False, indent=4)
+	else:
+		with open("data_file.json", "r") as read_file:
+			data = json.load(read_file)
 
-	with open("data_file.json", "w") as write_file:
-		dictseries = dict(sorted(dictseries.items()))
-		json.dump(dictseries, write_file, ensure_ascii=False, indent=4)
-else:
-	with open("data_file.json", "r") as read_file:
-		data = json.load(read_file)
-
-	for series, seriesinfo in copy.deepcopy(data).items():
-		seriesy = [i.strip() for i in series.split("|")][1]
-		seriesy = [i for i in seriesy.split("-") if i.isdigit()]
-		if len(seriesy) < 2:
-			sezsk = [int(x[1:]) for x in seriesinfo.keys()]
-			sezatn = []
-			epzsk = []
-			pirmasepatj = []
-			seriesid = [i.strip() for i in series.split("|")][-1]
-			seriesid = "".join([i for i in seriesid if i.isdigit()])
-			aratn = True
-			serieinfo = True
-			for sezonas, sezonoi in seriesinfo.items():
-				for epizodas, epizodoi in sezonoi.items():
-					for epizodopavad, epizododatos in epizodoi.items():
-						atr = pirmasal(listtod, epizododatos)
-						if "Episode #" in epizodopavad:
-							if not pirmasepatj:
-								if (len(atr) == 0) or (len(atr) == 3):
-									pirmasepatj.append(epizodopavad)
-									if aratn:
-										print(series)
-										aratn = False
-										print("Atnaujinama")
-										serieinfo = ia.get_movie(seriesid)
-										ia.update(serieinfo, 'episodes')
-										sezatn = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
-										if sezsk != sezatn:
-											atjsez = [s for s in sezatn if int(sezonas[1:]) < s]
-											epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
-											for s, e in zip(atjsez, epzsk):
-												laikepz = {}
-												laiksez = {}
-												for ee in range(1, e + 1):
-													laikdata = {}
-													countrydate = {}
-													epzname = serieinfo['episodes'][s][ee]['title']
-													episodeid = serieinfo['episodes'][s][ee].movieID
-													releasedate = ia.get_movie_release_dates(episodeid)['data']
-													sstring = f"S{s}"
-													estring = f"E{ee}"
-													if releasedate:
-														sortedcd = getrd(releasedate, countrydate)
-														countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
-														if countries:
-															sortedcdn = sorted_dates(countries, sortedcd, serieinfo['countries'])
-															for k, v in sortedcdn.items():
-																sortedcdn[k] = convert_dates(v)
-															laikdata = {epzname: sortedcdn}
-															laikepz[estring] = laikdata
-															laiksez[sstring] = laikepz
-															data[series].update(laiksez)
-														else:
-															for k, v in sortedcd.items():
-																sortedcd[k] = convert_dates(v)
-															laikdata = {epzname: sortedcd}
-															laikepz[estring] = laikdata
-															laiksez[sstring] = laikepz
-															data[series].update(laiksez)
-													else:
-														laikdata = {epzname: {}}
-														laikepz[estring] = laikdata
-														laiksez[sstring] = laikepz
-														data[series].update(laiksez)
-										else:
-											atjsez = [s for s in sezatn if int(sezonas[1:]) < s]
-											epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
-											for s, e in zip(atjsez, epzsk):
-												laikepz = {}
-												laiksez = {}
-												for ee in range(1, e + 1):
-													laikdata = {}
-													countrydate = {}
-													epzname = serieinfo['episodes'][s][ee]['title']
-													episodeid = serieinfo['episodes'][s][ee].movieID
-													releasedate = ia.get_movie_release_dates(episodeid)['data']
-													sstring = f"S{s}"
-													estring = f"E{ee}"
-													if releasedate:
-														sortedcd = getrd(releasedate, countrydate)
-														countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
-														if countries:
-															sortedcdn = sorted_dates(countries, sortedcd, serieinfo['countries'])
-															for k, v in sortedcdn.items():
-																sortedcdn[k] = convert_dates(v)
-															data[series][sstring][estring].update({epzname: sortedcdn})
-														else:
-															for k, v in sortedcd.items():
-																sortedcd[k] = convert_dates(v)
-															data[series][sstring][estring].update({epzname: sortedcd})
-													else:
-														data[series][sstring][estring].update({epzname: {}})
-								else:
-									# if (len(atr) == 0) or (len(atr) == 3) salyga
-									if not pirmasepatj:
-										if (listtod[0] == atr[0]) and (listtod > atr):
-											pirmasepatj.append(epizodopavad)
-											if aratn:
-												print(series)
-												aratn = False
-												print("Atnaujinama")
-												serieinfo = ia.get_movie(seriesid)
-												ia.update(serieinfo, 'episodes')
-												sezatn = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
-												if sezsk != sezatn:
-													atjsez = [s for s in sezatn if int(sezonas[1:]) < s]
-													epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
-													for s, e in zip(atjsez, epzsk):
-														laikepz = {}
-														laiksez = {}
-														for ee in range(1, e + 1):
-															laikdata = {}
-															countrydate = {}
-															epzname = serieinfo['episodes'][s][ee]['title']
-															episodeid = serieinfo['episodes'][s][ee].movieID
-															releasedate = ia.get_movie_release_dates(episodeid)['data']
-															sstring = f"S{s}"
-															estring = f"E{ee}"
-															if releasedate:
-																sortedcd = getrd(releasedate, countrydate)
-																countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
-																if countries:
-																	sortedcdn = sorted_dates(countries, sortedcd, serieinfo['countries'])
-																	for k, v in sortedcdn.items():
-																		sortedcdn[k] = convert_dates(v)
-																	laikdata = {epzname: sortedcdn}
-																	laikepz[estring] = laikdata
-																	laiksez[sstring] = laikepz
-																	data[series].update(laiksez)
-																else:
-																	for k, v in sortedcd.items():
-																		sortedcd[k] = convert_dates(v)
-																	laikdata = {epzname: sortedcd}
-																	laikepz[estring] = laikdata
-																	laiksez[sstring] = laikepz
-																	data[series].update(laiksez)
-															else:
-																laikdata = {epzname: {}}
+		for series, seriesinfo in copy.deepcopy(data).items():
+			seriesy = [i.strip() for i in series.split("|")][1]
+			seriesy = [i for i in seriesy.split("-") if i.isdigit()]
+			if len(seriesy) < 2:
+				sezsk = [int(x[1:]) for x in seriesinfo.keys()]
+				sezatn = []
+				epzsk = []
+				pirmasepatj = []
+				seriesid = [i.strip() for i in series.split("|")][-1]
+				seriesid = "".join([i for i in seriesid if i.isdigit()])
+				aratn = True
+				serieinfo = True
+				for sezonas, sezonoi in seriesinfo.items():
+					for epizodas, epizodoi in sezonoi.items():
+						for epizodopavad, epizododatos in epizodoi.items():
+							atr = pirmasal(listtod, epizododatos)
+							if "Episode #" in epizodopavad:
+								if not pirmasepatj:
+									if (len(atr) == 0) or (len(atr) == 3):
+										pirmasepatj.append(epizodopavad)
+										if aratn:
+											print(series)
+											aratn = False
+											print("Atnaujinama")
+											serieinfo = ia.get_movie(seriesid)
+											ia.update(serieinfo, 'episodes')
+											sezatn = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
+											if sezsk != sezatn:
+												atjsez = [s for s in sezatn if int(sezonas[1:]) < s]
+												epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
+												for s, e in zip(atjsez, epzsk):
+													laikepz = {}
+													laiksez = {}
+													for ee in range(1, e + 1):
+														laikdata = {}
+														countrydate = {}
+														epzname = serieinfo['episodes'][s][ee]['title']
+														episodeid = serieinfo['episodes'][s][ee].movieID
+														releasedate = ia.get_movie_release_dates(episodeid)['data']
+														sstring = f"S{s}"
+														estring = f"E{ee}"
+														if releasedate:
+															sortedcd = getrd(releasedate, countrydate)
+															countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+															if countries:
+																sortedcdn = sorted_dates(countries, sortedcd, serieinfo['countries'])
+																for k, v in sortedcdn.items():
+																	sortedcdn[k] = convert_dates(v)
+																laikdata = {epzname: sortedcdn}
 																laikepz[estring] = laikdata
 																laiksez[sstring] = laikepz
 																data[series].update(laiksez)
-												else:
-													atjsez = [s for s in sezatn if int(sezonas[1:]) < s]
-													epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
-													for s, e in zip(atjsez, epzsk):
-														laikepz = {}
-														laiksez = {}
-														for ee in range(1, e + 1):
-															laikdata = {}
-															countrydate = {}
-															epzname = serieinfo['episodes'][s][ee]['title']
-															episodeid = serieinfo['episodes'][s][ee].movieID
-															releasedate = ia.get_movie_release_dates(episodeid)['data']
-															sstring = f"S{s}"
-															estring = f"E{ee}"
-															if releasedate:
-																sortedcd = getrd(releasedate, countrydate)
-																countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
-																if countries:
-																	sortedcdn = sorted_dates(countries, sortedcd, serieinfo['countries'])
-																	for k, v in sortedcdn.items():
-																		sortedcdn[k] = convert_dates(v)
-																	data[series][sstring][estring].update({epzname: sortedcdn})
-																else:
-																	for k, v in sortedcd.items():
-																		sortedcd[k] = convert_dates(v)
-																	data[series][sstring][estring].update({epzname: sortedcd})
 															else:
-																data[series][sstring][estring].update({epzname: {}})
-										else:
-											pirmasepatj.append(epizodopavad)
-						else:
-							# if "Episode #" in epizodopavad salyga
-							if int(sezonas[1:]) == sezsk[-1]:
-								if len(atr) == 0 or (listtod >= atr):
-									if aratn:
-										print(series)
-										aratn = False
-										print("Atnaujinama")
-										serieinfo = ia.get_movie(seriesid)
-										ia.update(serieinfo, 'episodes')
-										sezatn = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
-										if sezsk != sezatn:
-											atjsez = [s for s in sezatn if int(sezonas[1:]) < s]
-											epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
-											for s, e in zip(atjsez, epzsk):
-												laikepz = {}
-												laiksez = {}
-												for ee in range(1, e + 1):
-													laikdata = {}
-													countrydate = {}
-													epzname = serieinfo['episodes'][s][ee]['title']
-													episodeid = serieinfo['episodes'][s][ee].movieID
-													releasedate = ia.get_movie_release_dates(episodeid)['data']
-													if releasedate:
-														sortedcd = getrd(releasedate, countrydate)
-														countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
-														if countries:
-															sortedcdn = sorted_dates(countries, sortedcd, serieinfo['countries'])
-															for k, v in sortedcdn.items():
-																sortedcdn[k] = convert_dates(v)
-															sstring = f"S{s}"
-															estring = f"E{ee}"
-															laikdata = {epzname: sortedcdn}
-															laikepz[estring] = laikdata
-															laiksez[sstring] = laikepz
-															data[series].update(laiksez)
+																for k, v in sortedcd.items():
+																	sortedcd[k] = convert_dates(v)
+																laikdata = {epzname: sortedcd}
+																laikepz[estring] = laikdata
+																laiksez[sstring] = laikepz
+																data[series].update(laiksez)
 														else:
-															sstring = f"S{s}"
-															estring = f"E{ee}"
-															for k, v in sortedcd.items():
-																sortedcd[k] = convert_dates(v)
-															laikdata = {epzname: sortedcd}
+															laikdata = {epzname: {}}
 															laikepz[estring] = laikdata
 															laiksez[sstring] = laikepz
 															data[series].update(laiksez)
-										else:
-											# if sezsk != sezatn salyga
-											continue
+											else:
+												atjsez = [s for s in sezatn if int(sezonas[1:]) < s]
+												print("atjsez", atjsez)
+												epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
+												print("epzsk", epzsk)
+												for s, e in zip(atjsez, epzsk):
+													laikepz = {}
+													laiksez = {}
+													for ee in range(1, e + 1):
+														laikdata = {}
+														countrydate = {}
+														epzname = serieinfo['episodes'][s][ee]['title']
+														episodeid = serieinfo['episodes'][s][ee].movieID
+														releasedate = ia.get_movie_release_dates(episodeid)['data']
+														sstring = f"S{s}"
+														estring = f"E{ee}"
+														if releasedate:
+															sortedcd = getrd(releasedate, countrydate)
+															countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+															if countries:
+																sortedcdn = sorted_dates(countries, sortedcd, serieinfo['countries'])
+																for k, v in sortedcdn.items():
+																	sortedcdn[k] = convert_dates(v)
+																data[series][sstring][estring].update({epzname: sortedcdn})
+															else:
+																for k, v in sortedcd.items():
+																	sortedcd[k] = convert_dates(v)
+																data[series][sstring][estring].update({epzname: sortedcd})
+														else:
+															data[series][sstring][estring].update({epzname: {}})
+									else:
+										# if (len(atr) == 0) or (len(atr) == 3) salyga
+										if not pirmasepatj:
+											if (listtod[0] == atr[0]) and (listtod > atr):
+												pirmasepatj.append(epizodopavad)
+												if aratn:
+													print(series)
+													aratn = False
+													print("Atnaujinama")
+													serieinfo = ia.get_movie(seriesid)
+													ia.update(serieinfo, 'episodes')
+													sezatn = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
+													if sezsk != sezatn:
+														atjsez = [s for s in sezatn if int(sezonas[1:]) < s]
+														epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
+														for s, e in zip(atjsez, epzsk):
+															laikepz = {}
+															laiksez = {}
+															for ee in range(1, e + 1):
+																laikdata = {}
+																countrydate = {}
+																epzname = serieinfo['episodes'][s][ee]['title']
+																episodeid = serieinfo['episodes'][s][ee].movieID
+																releasedate = ia.get_movie_release_dates(episodeid)['data']
+																sstring = f"S{s}"
+																estring = f"E{ee}"
+																if releasedate:
+																	sortedcd = getrd(releasedate, countrydate)
+																	countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+																	if countries:
+																		sortedcdn = sorted_dates(countries, sortedcd, serieinfo['countries'])
+																		for k, v in sortedcdn.items():
+																			sortedcdn[k] = convert_dates(v)
+																		laikdata = {epzname: sortedcdn}
+																		laikepz[estring] = laikdata
+																		laiksez[sstring] = laikepz
+																		data[series].update(laiksez)
+																	else:
+																		for k, v in sortedcd.items():
+																			sortedcd[k] = convert_dates(v)
+																		laikdata = {epzname: sortedcd}
+																		laikepz[estring] = laikdata
+																		laiksez[sstring] = laikepz
+																		data[series].update(laiksez)
+																else:
+																	laikdata = {epzname: {}}
+																	laikepz[estring] = laikdata
+																	laiksez[sstring] = laikepz
+																	data[series].update(laiksez)
+													else:
+														atjsez = [s for s in sezatn if int(sezonas[1:]) < s]
+														epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
+														for s, e in zip(atjsez, epzsk):
+															laikepz = {}
+															laiksez = {}
+															for ee in range(1, e + 1):
+																laikdata = {}
+																countrydate = {}
+																epzname = serieinfo['episodes'][s][ee]['title']
+																episodeid = serieinfo['episodes'][s][ee].movieID
+																releasedate = ia.get_movie_release_dates(episodeid)['data']
+																sstring = f"S{s}"
+																estring = f"E{ee}"
+																if releasedate:
+																	sortedcd = getrd(releasedate, countrydate)
+																	countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+																	if countries:
+																		sortedcdn = sorted_dates(countries, sortedcd, serieinfo['countries'])
+																		for k, v in sortedcdn.items():
+																			sortedcdn[k] = convert_dates(v)
+																		data[series][sstring][estring].update({epzname: sortedcdn})
+																	else:
+																		for k, v in sortedcd.items():
+																			sortedcd[k] = convert_dates(v)
+																		data[series][sstring][estring].update({epzname: sortedcd})
+																else:
+																	data[series][sstring][estring].update({epzname: {}})
+											else:
+												pirmasepatj.append(epizodopavad)
 							else:
-								# if int(sezonas[1:]) == sezsk[-1] salyga
-								continue
-		else:
-			continue
+								# if "Episode #" in epizodopavad salyga
+								if int(sezonas[1:]) == sezsk[-1]:
+									if len(atr) == 0 or (listtod >= atr):
+										if aratn:
+											print(series)
+											aratn = False
+											print("Atnaujinama")
+											serieinfo = ia.get_movie(seriesid)
+											ia.update(serieinfo, 'episodes')
+											sezatn = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
+											if sezsk != sezatn:
+												atjsez = [s for s in sezatn if int(sezonas[1:]) < s]
+												epzsk = [len(serieinfo['episodes'][x]) for x in atjsez]
+												for s, e in zip(atjsez, epzsk):
+													laikepz = {}
+													laiksez = {}
+													for ee in range(1, e + 1):
+														laikdata = {}
+														countrydate = {}
+														epzname = serieinfo['episodes'][s][ee]['title']
+														episodeid = serieinfo['episodes'][s][ee].movieID
+														releasedate = ia.get_movie_release_dates(episodeid)['data']
+														if releasedate:
+															sortedcd = getrd(releasedate, countrydate)
+															countries = {k: v for (k, v) in sortedcd.items() if k in serieinfo['countries']}
+															if countries:
+																sortedcdn = sorted_dates(countries, sortedcd, serieinfo['countries'])
+																for k, v in sortedcdn.items():
+																	sortedcdn[k] = convert_dates(v)
+																sstring = f"S{s}"
+																estring = f"E{ee}"
+																laikdata = {epzname: sortedcdn}
+																laikepz[estring] = laikdata
+																laiksez[sstring] = laikepz
+																data[series].update(laiksez)
+															else:
+																sstring = f"S{s}"
+																estring = f"E{ee}"
+																for k, v in sortedcd.items():
+																	sortedcd[k] = convert_dates(v)
+																laikdata = {epzname: sortedcd}
+																laikepz[estring] = laikdata
+																laiksez[sstring] = laikepz
+																data[series].update(laiksez)
+											else:
+												# if sezsk != sezatn salyga
+												continue
+								else:
+									# if int(sezonas[1:]) == sezsk[-1] salyga
+									continue
+			else:
+				continue
 
-	with open("data_file.json", "w") as write_file:
-		json.dump(data, write_file, ensure_ascii=False, indent=4)
+		with open("data_file.json", "w") as write_file:
+			json.dump(data, write_file, ensure_ascii=False, indent=4)
 
-with open("data_file.json", "r") as read_file:
-	data = json.load(read_file)
+	with open("data_file.json", "r") as read_file:
+		data = json.load(read_file)
 
-atvaizdavimas = []
-for sp in data.items():
-	lepdict = {}
-	lepdict[sp[0]] = []
-	for s in sp[1].items():
-		for e in s[1].items():
-			for p in e[1].items():
-				lepinfo = []
-				ldatos = []
-				for sd in p[1].items():
-					a = sd[1].split()
-					if len(a) == 3:
-						if datetime.today() <= datetime.strptime(sd[1], "%Y %B %d"):
-							met = int(a[0])
-							men = list(calendar.month_name).index(a[1])
-							die = int(a[2])
-							if (met >= tod.year):
-								if (men == tod.month) and (die >= tod.day):
-									ldatos.append(sd)
-								elif (men > tod.month):
-									ldatos.append(sd)
-					else:
-						continue
-				if ldatos:
-					lepinfo = [s[0], e[0], p[0]]
-					lepinfo.append(ldatos)
-					lepdict[sp[0]].append(lepinfo)
-	if lepdict[sp[0]]:
-		atvaizdavimas.append(lepdict)
+	atvaizdavimas = []
+	for sp in data.items():
+		lepdict = {}
+		lepdict[sp[0]] = []
+		for s in sp[1].items():
+			for e in s[1].items():
+				for p in e[1].items():
+					lepinfo = []
+					ldatos = []
+					for sd in p[1].items():
+						a = sd[1].split()
+						if len(a) == 3:
+							if datetime.today() <= datetime.strptime(sd[1], "%Y %B %d"):
+								met = int(a[0])
+								men = list(calendar.month_name).index(a[1])
+								die = int(a[2])
+								if (met >= tod.year):
+									if (men == tod.month) and (die >= tod.day):
+										ldatos.append(sd)
+									elif (men > tod.month):
+										ldatos.append(sd)
+						else:
+							continue
+					if ldatos:
+						lepinfo = [s[0], e[0], p[0]]
+						lepinfo.append(ldatos)
+						lepdict[sp[0]].append(lepinfo)
+		if lepdict[sp[0]]:
+			atvaizdavimas.append(lepdict)
 
-for i in atvaizdavimas:
-	for k, v in i.items():
-		print('---------------------------------------------')
-		print('---------------------------------------------')
-		print(tod.strftime("%Y %B %d"))
-		print(f'Serialas "{k}"')
-		for j in v:
+	for i in atvaizdavimas:
+		for k, v in i.items():
 			print('---------------------------------------------')
-			print(f'****** {j[0]} {j[1]} "{j[2]}"')
-			for d in j[-1]:
-				print(f'****** {" ".join(d)}')
+			print('---------------------------------------------')
+			print(tod.strftime("%Y %B %d"))
+			print(f'Serialas "{k}"')
+			for j in v:
+				print('---------------------------------------------')
+				print(f'****** {j[0]} {j[1]} "{j[2]}"')
+				for d in j[-1]:
+					print(f'****** {" ".join(d)}')
+
+
+if __name__ == "__main__":
+	main()
