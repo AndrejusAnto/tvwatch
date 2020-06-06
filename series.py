@@ -424,6 +424,8 @@ def main():
 													laikepz = {}
 													laiksez = {}
 													for ee in range(1, e + 1):
+														sstring = f"S{s}"
+														estring = f"E{ee}"
 														laikdata = {}
 														countrydate = {}
 														epzname = serieinfo['episodes'][s][ee]['title']
@@ -436,15 +438,11 @@ def main():
 																sortedcdn = sorted_dates(countries, sortedcd, serieinfo['countries'])
 																for k, v in sortedcdn.items():
 																	sortedcdn[k] = convert_dates(v)
-																sstring = f"S{s}"
-																estring = f"E{ee}"
 																laikdata = {epzname: sortedcdn}
 																laikepz[estring] = laikdata
 																laiksez[sstring] = laikepz
 																data[series].update(laiksez)
 															else:
-																sstring = f"S{s}"
-																estring = f"E{ee}"
 																for k, v in sortedcd.items():
 																	sortedcd[k] = convert_dates(v)
 																laikdata = {epzname: sortedcd}
