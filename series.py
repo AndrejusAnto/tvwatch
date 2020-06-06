@@ -212,7 +212,10 @@ def collect_series(tv):
 		pass
 
 
+# def update_series(a, s, si):
+
 def main():
+	# global dictseries
 	if not os.path.isfile("data_file.json"):
 		for tvserie in watchseries:
 			threads.append(Thread(target=collect_series, args=(tvserie,)))
