@@ -110,11 +110,11 @@ watchseries = [
 	"Sherlock",
 	"True Detective",
 	"Westworld",
+	"Goliath",
+	"Doom Patrol"
 ]
 
 dictseries = {}
-atvaizdavimas = []
-threads = []
 
 
 def pirmasal(tod, ed):
@@ -215,7 +215,8 @@ def collect_series(tv):
 # def update_series(a, s, si):
 
 def main():
-	# global dictseries
+	threads = []
+
 	if not os.path.isfile("data_file.json"):
 		for tvserie in watchseries:
 			threads.append(Thread(target=collect_series, args=(tvserie,)))
