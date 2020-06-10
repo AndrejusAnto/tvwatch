@@ -5,7 +5,6 @@ from threading import Thread
 import imdb
 from datetime import datetime
 import json
-import calendar
 import os
 import copy
 
