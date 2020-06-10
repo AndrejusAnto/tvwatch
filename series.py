@@ -173,10 +173,10 @@ def collect_series(tv):
 				seriesid = serie.movieID
 				serieinfo = ia.get_movie(seriesid)
 				serieyear = serieinfo["series years"]
-				print(f'{serieinfo["title"]} | {serieyear} | ID{seriesid}')
 				if serieinfo['kind'] == 'tv series' and tv == serieinfo['title']:
 					ifserie = False
 					pavad = f'{serieinfo["title"]} | {serieyear} | ID{seriesid}'
+					print(pavad)
 					seriesdict[pavad] = {}
 					ia.update(serieinfo, 'episodes')
 					seasonlist = [s for s in sorted(serieinfo['episodes'].keys()) if s > 0]
