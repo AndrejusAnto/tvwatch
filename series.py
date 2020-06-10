@@ -467,47 +467,6 @@ def main():
 	with open("data_file.json", "r") as read_file:
 		data = json.load(read_file)
 
-	# atvaizdavimas = []
-	# for sp in data.items():
-	# 	lepdict = {}
-	# 	lepdict[sp[0]] = []
-	# 	for s in sp[1].items():
-	# 		for e in s[1].items():
-	# 			for p in e[1].items():
-	# 				lepinfo = []
-	# 				ldatos = []
-	# 				for sd in p[1].items():
-	# 					a = sd[1].split()
-	# 					if len(a) == 3:
-	# 						if datetime.today() <= datetime.strptime(sd[1], "%Y %B %d"):
-	# 							met = int(a[0])
-	# 							men = list(calendar.month_name).index(a[1])
-	# 							die = int(a[2])
-	# 							if (met >= tod.year):
-	# 								if (men == tod.month) and (die >= tod.day):
-	# 									ldatos.append(sd)
-	# 								elif (men > tod.month):
-	# 									ldatos.append(sd)
-	# 					else:
-	# 						continue
-	# 				if ldatos:
-	# 					lepinfo = [s[0], e[0], p[0]]
-	# 					lepinfo.append(ldatos)
-	# 					lepdict[sp[0]].append(lepinfo)
-	# 	if lepdict[sp[0]]:
-	# 		atvaizdavimas.append(lepdict)
-
-	# for i in atvaizdavimas:
-	# 	for k, v in i.items():
-	# 		print('---------------------------------------------')
-	# 		print('---------------------------------------------')
-	# 		print(tod.strftime("%Y %B %d"))
-	# 		print(f'Serialas "{k}"')
-	# 		for j in v:
-	# 			print('---------------------------------------------')
-	# 			print(f'****** {j[0]} {j[1]} "{j[2]}"')
-	# 			for d in j[-1]:
-	# 				print(f'****** {" ".join(d)}')
 	ifprin = True
 	for serie, info in data.items():
 		if ifprin:
