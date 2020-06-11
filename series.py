@@ -235,6 +235,10 @@ def main():
 		with open("data_file.json", "r") as read_file:
 			data = json.load(read_file)
 
+		seriesn = [i.split(" | ")[0] for i in list(data.keys())]
+		news = list(set(watchseries) - set(seriesn))
+		# print(news)
+
 		for series, seriesinfo in copy.deepcopy(data).items():
 			seriesy = [i.strip() for i in series.split("|")][1]
 			seriesy = [i for i in seriesy.split("-") if i.isdigit()]
