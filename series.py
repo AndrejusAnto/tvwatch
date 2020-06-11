@@ -238,6 +238,8 @@ def main():
 		seriesn = [i.split(" | ")[0] for i in list(data.keys())]
 		news = list(set(watchseries) - set(seriesn))
 		# print(news)
+		# if news:
+			
 
 		for series, seriesinfo in copy.deepcopy(data).items():
 			seriesy = [i.strip() for i in series.split("|")][1]
