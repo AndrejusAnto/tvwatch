@@ -237,9 +237,9 @@ def main():
 
 		seriesn = [i.split(" | ")[0] for i in list(data.keys())]
 		news = list(set(watchseries) - set(seriesn))
-		# print(news)
-		# if news:
-
+		if news:
+			for tv in news:
+				collect_series(tv, data)
 
 		for series, seriesinfo in copy.deepcopy(data).items():
 			seriesy = [i.strip() for i in series.split("|")][1]
@@ -467,6 +467,7 @@ def main():
 				continue
 
 		with open("data_file.json", "w") as write_file:
+			data = dict(sorted(data.items()))
 			json.dump(data, write_file, ensure_ascii=False, indent=4)
 
 	with open("data_file.json", "r") as read_file:
