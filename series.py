@@ -163,7 +163,7 @@ def sorted_dates(cntr, sd, sic):
 	return sortedcdn
 
 
-def collect_series(tv):
+def collect_series(tv, d):
 	try:
 		seriesdict = {}
 		ifserie = True
@@ -198,15 +198,15 @@ def collect_series(tv):
 									for k, v in sortedcdn.items():
 										sortedcdn[k] = convert_dates(v)
 									seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = sortedcdn
-									dictseries.update(seriesdict)
+									d.update(seriesdict)
 								else:
 									for k, v in sortedcd.items():
 										sortedcd[k] = convert_dates(v)
 									seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = sortedcd
-									dictseries.update(seriesdict)
+									d.update(seriesdict)
 							else:
 								seriesdict[pavad][sstring][estring][serieinfo['episodes'][s][e]['title']] = {}
-								dictseries.update(seriesdict)
+								d.update(seriesdict)
 			else:
 				continue
 	except KeyError:
@@ -220,7 +220,7 @@ def main():
 
 	if not os.path.isfile("data_file.json"):
 		for tvserie in watchseries:
-			threads.append(Thread(target=collect_series, args=(tvserie,)))
+			threads.append(Thread(target=collect_series, args=(tvserie, dictseries)))
 
 		for thread in threads:
 			thread.start()
@@ -239,7 +239,7 @@ def main():
 		news = list(set(watchseries) - set(seriesn))
 		# print(news)
 		# if news:
-			
+
 
 		for series, seriesinfo in copy.deepcopy(data).items():
 			seriesy = [i.strip() for i in series.split("|")][1]
