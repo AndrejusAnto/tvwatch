@@ -341,49 +341,9 @@ def update_series(series, data):
 							continue
 
 
-def main():
-	threads = []
-
-	if not os.path.isfile("data_file.json"):
-		for tvserie in watchseries:
-			threads.append(Thread(target=collect_series, args=(tvserie, dictseries)))
-
-		for thread in threads:
-			thread.start()
-
-		for thread in threads:
-			thread.join()
-
-		with open("data_file.json", "w") as write_file:
-			dictseriesn = dict(sorted(dictseries.items()))
-			json.dump(dictseriesn, write_file, ensure_ascii=False, indent=4)
-	else:
-		threads = []
-		with open("data_file.json", "r") as read_file:
-			data = json.load(read_file)
-
-		seriesn = {i.split(" | ")[0]: i for i in list(data.keys())}
-		for tvserie in watchseries:
-			if tvserie in list(seriesn.keys()):
-				threads.append(Thread(target=update_series, args=(seriesn[tvserie], data)))
-			else:
-				threads.append(Thread(target=collect_series, args=(tvserie, data)))
-
-		for thread in threads:
-			thread.start()
-
-		for thread in threads:
-			thread.join()
-
-		with open("data_file.json", "w") as write_file:
-			data = dict(sorted(data.items()))
-			json.dump(data, write_file, ensure_ascii=False, indent=4)
-
-	with open("data_file.json", "r") as read_file:
-		data = json.load(read_file)
-
+def atvaizdavimas(d):
 	ifprin = True
-	for serie, info in data.items():
+	for serie, info in d.items():
 		if ifprin:
 			ifprin = False
 			print('---------------------------------------------')
@@ -408,6 +368,49 @@ def main():
 							print('     ', sal, dt)
 					if ifkaz:
 						print('---------------------------------------------')
+
+
+def main():
+	threads = []
+
+	if not os.path.isfile("data_file.json"):
+		for tvserie in watchseries:
+			threads.append(Thread(target=collect_series, args=(tvserie, dictseries)))
+
+		for thread in threads:
+			thread.start()
+
+		for thread in threads:
+			thread.join()
+
+		atvaizdavimas(dictseries)
+
+		with open("data_file.json", "w") as write_file:
+			dictseriesn = dict(sorted(dictseries.items()))
+			json.dump(dictseriesn, write_file, ensure_ascii=False, indent=4)
+	else:
+		threads = []
+		with open("data_file.json", "r") as read_file:
+			data = json.load(read_file)
+
+		seriesn = {i.split(" | ")[0]: i for i in list(data.keys())}
+		for tvserie in watchseries:
+			if tvserie in list(seriesn.keys()):
+				threads.append(Thread(target=update_series, args=(seriesn[tvserie], data)))
+			else:
+				threads.append(Thread(target=collect_series, args=(tvserie, data)))
+
+		for thread in threads:
+			thread.start()
+
+		for thread in threads:
+			thread.join()
+
+		atvaizdavimas(data)
+
+		with open("data_file.json", "w") as write_file:
+			data = dict(sorted(data.items()))
+			json.dump(data, write_file, ensure_ascii=False, indent=4)
 
 
 if __name__ == "__main__":
