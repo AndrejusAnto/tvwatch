@@ -342,12 +342,23 @@ def update_series(series, data):
 
 
 def atvaizdavimas(d):
+	stdout_fileno = sys.stdout
+	# Redirect sys.stdout to the file
 	sys.stdout = open(f'{tod.year}_{tod.month}_{tod.day}.txt','wt')
+	 
+	# for ip in sample_input:
+	# 	# Prints to the redirected stdout (Output.txt)
+	# 	sys.stdout.write(ip + '\n')
+	# 	# Prints to the actual saved stdout handler
+	# 	stdout_fileno.write(ip + '\n')
+
 	ifprin = True
 	for serie, info in d.items():
 		if ifprin:
 			ifprin = False
-			print('---------------------------------------------')
+			sys.stdout.write('---------------------------------------------'+ '\n')
+			stdout_fileno.write('---------------------------------------------'+ '\n')
+			# print('---------------------------------------------')
 		ifprint = True
 		for sez, sezi in info.items():
 			for epz, epzi in sezi.items():
@@ -360,21 +371,40 @@ def atvaizdavimas(d):
 							ifkaz = True
 							if ifprint:
 								ifprint = False
-								print('---------------------------------------------')
-								print(tod.strftime("%Y %B %d"))
-								print(serie)
+								sys.stdout.write('---------------------------------------------'+ '\n')
+								stdout_fileno.write('---------------------------------------------'+ '\n')
+								# print('---------------------------------------------')
+								
+								sys.stdout.write(tod.strftime("%Y %B %d")+ '\n')
+								stdout_fileno.write(tod.strftime("%Y %B %d")+ '\n')
+								# print(tod.strftime("%Y %B %d"))
+								
+								sys.stdout.write(serie+ '\n')
+								stdout_fileno.write(serie+ '\n')
+								# print(serie)
 							if ifepz:
 								ifepz = False
-								print("*****", sez, epz, epzpav, "*****")
-							print('     ', sal, dt)
+								sys.stdout.write(f"***** {sez} {epz} {epzpav} *****"+ '\n')
+								stdout_fileno.write(f"***** {sez} {epz} {epzpav} *****"+ '\n')
+								# print("*****", sez, epz, epzpav, "*****")
+							sys.stdout.write(f'     {sal} {dt}'+ '\n')
+							stdout_fileno.write(f'     {sal} {dt}'+ '\n')
+							# print('     ', sal, dt)
 					if ifkaz:
-						print('---------------------------------------------')
+						sys.stdout.write('---------------------------------------------'+ '\n')
+						stdout_fileno.write('---------------------------------------------'+ '\n')
+						# print('---------------------------------------------')
+	# Close the file
+	sys.stdout.close()
+	# Restore sys.stdout to our old saved file handler
+	sys.stdout = stdout_fileno
 
 
 def main():
-	threads = []
 
 	if not os.path.isfile("data_file.json"):
+		threads = []
+
 		for tvserie in watchseries:
 			threads.append(Thread(target=collect_series, args=(tvserie, dictseries)))
 
