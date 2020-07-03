@@ -12,6 +12,7 @@ tod = datetime.today()
 listtod = [tod.year, tod.month, tod.day]
 ia = imdb.IMDb()
 
+# kosk skirtumas
 
 def convert_dates(dates):
 	if type(dates) == list:
@@ -73,6 +74,8 @@ def convert_dates(dates):
 				d[1] = 8
 			elif d[1] == "September":
 				d[1] = 9
+	"The Boys",
+	"The Expanse",
 			elif d[1] == "October":
 				d[1] = 10
 			elif d[1] == "November":
@@ -98,8 +101,6 @@ watchseries = [
 	"Star Trek: Picard",
 	"Stranger Things",
 	"The Blacklist",
-	"The Boys",
-	"The Expanse",
 	"The Good Doctor",
 	"The Grand Tour",
 	"The Mandalorian",
