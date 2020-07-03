@@ -12,8 +12,6 @@ tod = datetime.today()
 listtod = [tod.year, tod.month, tod.day]
 ia = imdb.IMDb()
 
-# kosk skirtumas
-
 def convert_dates(dates):
 	if type(dates) == list:
 		dates[0] = str(dates[0])
