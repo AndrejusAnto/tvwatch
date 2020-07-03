@@ -2,7 +2,7 @@ Python'o script'as, kuris jama serialų info iš IMDB ir pateikia sąrašą seri
 
 Linux: pip install IMDbPY
 
-Per terminalą: python series.py. Bus sukurtas json failas, kur bus išsaugomi duomenys ir tada informacija bus atprint'a terminale.
+Per terminalą: python series.py. Bus sukurtas json failas, kur bus išsaugomi duomenys ir tada informacija bus atprint'a terminale ir bus išsaugota teksiniam faile (.txt) su data .
 
 * kad kodas gražiau atrodytų https://github.com/AndrejusAnto/tvwatch/blob/alpha/series.py?ts=4
 
