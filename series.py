@@ -7,6 +7,7 @@ from datetime import datetime
 import json
 import os
 import copy
+import sys
 
 tod = datetime.today()
 listtod = [tod.year, tod.month, tod.day]
@@ -72,8 +73,6 @@ def convert_dates(dates):
 				d[1] = 8
 			elif d[1] == "September":
 				d[1] = 9
-	"The Boys",
-	"The Expanse",
 			elif d[1] == "October":
 				d[1] = 10
 			elif d[1] == "November":
@@ -112,6 +111,8 @@ watchseries = [
 	"Doom Patrol",
 	"F Is for Family",
 	"The 100",
+	"The Boys",
+	"The Expanse",
 ]
 
 dictseries = {}
@@ -341,6 +342,7 @@ def update_series(series, data):
 
 
 def atvaizdavimas(d):
+	sys.stdout = open(f'{tod.year}_{tod.month}_{tod.day}.txt','wt')
 	ifprin = True
 	for serie, info in d.items():
 		if ifprin:
