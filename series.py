@@ -110,7 +110,6 @@ watchseries = [
 	"Goliath",
 	"Doom Patrol",
 	"F Is for Family",
-	"The 100",
 	"The Boys",
 	"The Expanse",
 ]
