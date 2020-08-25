@@ -114,7 +114,10 @@ watchseries = [
 	"The Expanse",
 	"The Umbrella Academy",
 	"Altered Carbon",
+<<<<<<< HEAD
 	"Curb Your Enthusiasm"
+=======
+>>>>>>> 89adf9743e5f2455c90e026399b1be4e31c7f010
 ]
 
 dictseries = {}
