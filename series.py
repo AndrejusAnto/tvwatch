@@ -13,7 +13,9 @@ tod = datetime.today()
 listtod = [tod.year, tod.month, tod.day]
 ia = imdb.IMDb()
 
-def convert_dates(dates):
+# testuoju static typing dėl hintų
+# Union[list, str] reiškia, kad funkcija convert_dates gali priimti tiek list'ą, tiek string'ą ir taip grąžinti tiek list'ą, tiek string'ą
+def convert_dates(dates: Union[list, str]) -> Union[list, str]:
 	if type(dates) == list:
 		dates[0] = str(dates[0])
 		if len(dates) == 1:
