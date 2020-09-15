@@ -2,8 +2,9 @@
 # coding: utf-8
 
 from threading import Thread
-import imdb
 from datetime import datetime
+from typing import Union
+import imdb
 import json
 import os
 import copy
