@@ -14,9 +14,6 @@ tod = datetime.today()
 listtod = [tod.year, tod.month, tod.day]
 ia = imdb.IMDb()
 
-# import logging
-# logging.basicConfig(level=logging.DEBUG)
-
 # testuoju static typing dėl hint'ų
 # Union[list, str] reiškia, kad funkcija convert_dates gali priimti tiek list'ą, tiek string'ą ir taip grąžinti tiek list'ą, tiek string'ą
 def convert_dates(dates: Union[list, str]) -> Union[list, str]:
