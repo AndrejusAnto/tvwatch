@@ -9,88 +9,47 @@ import json
 import os
 import copy
 import sys
+import logging
 
 tod = datetime.today()
 listtod = [tod.year, tod.month, tod.day]
 ia = imdb.IMDb()
 
-import logging
-# logging.basicConfig(level=logging.INFO)
+convertmonths = {
+			1: "January",
+			2: "February",
+			3: "March",
+			4: "April",
+			5: "May",
+			6: "June",
+			7: "July",
+			8: "August",
+			9: "September",
+			10: "October",
+			11: "November",
+			12: "December",
+}
 
 # testuoju static typing dėl hint'ų
 # Union[list, str] reiškia, kad funkcija convert_dates gali priimti tiek list'ą, tiek string'ą ir taip grąžinti tiek list'ą, tiek string'ą
 def convert_dates(dates: Union[list, str]) -> Union[list, str]:
 	if type(dates) == list:
-		dates[0] = str(dates[0])
-		if len(dates) == 1:
-			return dates[0]
+		if len(dates) != 1:
+			dates[1] = convertmonths[dates[1]]
+			return " ".join([str(x) for x in dates])
 		else:
-			if dates[1] == 1:
-				dates[1] = "January"
-			elif dates[1] == 2:
-				dates[1] = "February"
-			elif dates[1] == 3:
-				dates[1] = "March"
-			elif dates[1] == 4:
-				dates[1] = "April"
-			elif dates[1] == 5:
-				dates[1] = "May"
-			elif dates[1] == 6:
-				dates[1] = "June"
-			elif dates[1] == 7:
-				dates[1] = "July"
-			elif dates[1] == 8:
-				dates[1] = "August"
-			elif dates[1] == 9:
-				dates[1] = "September"
-			elif dates[1] == 10:
-				dates[1] = "October"
-			elif dates[1] == 11:
-				dates[1] = "November"
-			elif dates[1] == 12:
-				dates[1] = "December"
+			return str(dates[0])
 
-			if len(dates) == 2:
-				return " ".join(dates)
-			else:
-				dates[2] = str(dates[2])
-				return " ".join(dates)
 	elif type(dates) == str:
-		d = dates.split()
-		d[0] = int(d[0])
-		if len(d) == 1:
-			return d
+		ndates = dates.split()
+		if len(ndates) != 1:
+			nconvertmonths = {value:key for (key, value) in convertmonths.items()}
+			ndates[1] = nconvertmonths[ndates[1]]
+			nd = [int(x) for x in ndates]
+			return nd
 		else:
-			if d[1] == "January":
-				d[1] = 1
-			elif d[1] == "February":
-				d[1] = 2
-			elif d[1] == "March":
-				d[1] = 3
-			elif d[1] == "April":
-				d[1] = 4
-			elif d[1] == "May":
-				d[1] = 5
-			elif d[1] == "June":
-				d[1] = 6
-			elif d[1] == "July":
-				d[1] = 7
-			elif d[1] == "August":
-				d[1] = 8
-			elif d[1] == "September":
-				d[1] = 9
-			elif d[1] == "October":
-				d[1] = 10
-			elif d[1] == "November":
-				d[1] = 11
-			elif d[1] == "December":
-				d[1] = 12
-
-			if len(d) == 2:
-				return d
-			else:
-				d[2] = int(d[2])
-				return d
+			nd = [int(x) for x in ndates]
+			return nd
 
 
 watchseries = [
