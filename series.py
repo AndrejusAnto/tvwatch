@@ -152,24 +152,22 @@ def getrd(rd):
 	return sortedcd
 
 
-def sorted_dates(cntr, sd, sic):
+def sorted_dates(cntr, cd, sic):
 	sortedcountries = dict(sorted(cntr.items(), key=lambda x: x[1]))
-	logging.warning(f"sortedcountries: {sortedcountries}")
 	pirmasalis = list(sortedcountries.values())[0]
-	for k, v in sd.copy().items():
-		if v < pirmasalis:
-			del sd[k]
 
-	laiks = list(sd.keys())
-	laikd = list(sd.values())
-	for idx, v in enumerate(zip(laiks, laikd)):
-		if v[0] in sic:
-			if v[1] <= laikd[0]:
-				laiks.remove(v[0])
-				laikd.pop(idx)
-				laiks.insert(0, v[0])
-				laikd.insert(0, v[1])
-	sortedcdn = dict(zip(laiks, laikd))
+	for country, date in cd.copy().items():
+		if date < pirmasalis:
+			del cd[country]
+
+	cd_tuples = list(cd.items())
+	for country, date in cd.items(): 
+		if country in sic:
+			if date <= cd_tuples[0][1]:
+				cd_tuples.remove((country, date))
+				cd_tuples.insert(0, (country, date))
+	sortedcdn = dict(cd_tuples)
+
 	return sortedcdn
 
 
