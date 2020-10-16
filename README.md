@@ -4,6 +4,6 @@ Linux: pip install IMDbPY
 
 Per terminalą: python series.py. Bus sukurtas json failas, kur bus išsaugomi duomenys ir tada informacija bus atprint'a terminale ir bus išsaugota teksiniam faile (.txt) su data .
 
-* kad kodas gražiau atrodytų https://github.com/AndrejusAnto/tvwatch/blob/alpha/series.py?ts=4
+* kad kodas gražiau atrodytų https://github.com/AndrejusAnto/tvwatch/blob/master/series.py?ts=4
 
 ![Alt Text](https://github.com/AndrejusAnto/tvwatch/blob/master/demo.gif)
