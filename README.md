@@ -6,4 +6,4 @@ Per terminalą: python series.py. Bus sukurtas json failas, kur bus išsaugomi d
 
 * kad kodas gražiau atrodytų https://github.com/AndrejusAnto/tvwatch/blob/alpha/series.py?ts=4
 
-![Alt Text](https://github.com/AndrejusAnto/tvwatch/blob/alpha/demo.gif)
+![Alt Text](https://github.com/AndrejusAnto/tvwatch/blob/master/demo.gif)
