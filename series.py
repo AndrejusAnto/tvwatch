@@ -16,22 +16,25 @@ listtod = [tod.year, tod.month, tod.day]
 ia = imdb.IMDb()
 
 convertmonths = {
-			1: "January",
-			2: "February",
-			3: "March",
-			4: "April",
-			5: "May",
-			6: "June",
-			7: "July",
-			8: "August",
-			9: "September",
-			10: "October",
-			11: "November",
-			12: "December",
+	1: "January",
+	2: "February",
+	3: "March",
+	4: "April",
+	5: "May",
+	6: "June",
+	7: "July",
+	8: "August",
+	9: "September",
+	10: "October",
+	11: "November",
+	12: "December",
 }
 
-# testuoju static typing dėl hint'ų
-# Union[list, str] reiškia, kad funkcija convert_dates gali priimti tiek list'ą, tiek string'ą ir taip grąžinti tiek list'ą, tiek string'ą
+"""testuoju static typing dėl hint'ų
+Union[list, str] reiškia, kad funkcija convert_dates gali priimti tiek list'ą,
+tiek string'ą ir taip grąžinti tiek list'ą, tiek string'ą"""
+
+
 def convert_dates(dates: Union[list, str]) -> Union[list, str]:
 	if type(dates) == list:
 		if len(dates) != 1:
@@ -43,7 +46,7 @@ def convert_dates(dates: Union[list, str]) -> Union[list, str]:
 	elif type(dates) == str:
 		ndates = dates.split()
 		if len(ndates) != 1:
-			nconvertmonths = {value:key for (key, value) in convertmonths.items()}
+			nconvertmonths = {value: key for (key, value) in convertmonths.items()}
 			ndates[1] = nconvertmonths[ndates[1]]
 			nd = [int(x) for x in ndates]
 			return nd
@@ -120,7 +123,7 @@ def sorted_dates(cntr, cd, sic):
 			del cd[country]
 
 	cd_tuples = list(cd.items())
-	for country, date in cd.items(): 
+	for country, date in cd.items():
 		if country in sic:
 			if date <= cd_tuples[0][1]:
 				cd_tuples.remove((country, date))
@@ -246,7 +249,6 @@ def update_series(series, data):
 		aratn = True
 		serieinfo = True
 		sezatn = []
-		epzsk = []
 		seriesid = [i.strip() for i in series.split("|")][-1]
 		seriesid = "".join([i for i in seriesid if i.isdigit()])
 		sezsk = [int(x[1:]) for x in seriesinfo.keys()]
@@ -310,14 +312,14 @@ def update_series(series, data):
 def atvaizdavimas(d):
 	stdout_fileno = sys.stdout
 	# Redirect sys.stdout to the file
-	sys.stdout = open(f'{tod.year}_{tod.month}_{tod.day}.txt','wt')
+	sys.stdout = open(f'{tod.year}_{tod.month}_{tod.day}.txt', 'wt')
 
 	ifprin = True
 	for serie, info in d.items():
 		if ifprin:
 			ifprin = False
-			sys.stdout.write('---------------------------------------------'+ '\n')
-			stdout_fileno.write('---------------------------------------------'+ '\n')
+			sys.stdout.write('---------------------------------------------' + '\n')
+			stdout_fileno.write('---------------------------------------------' + '\n')
 		ifprint = True
 		for sez, sezi in info.items():
 			for epz, epzi in sezi.items():
@@ -330,23 +332,21 @@ def atvaizdavimas(d):
 							ifkaz = True
 							if ifprint:
 								ifprint = False
-								sys.stdout.write('---------------------------------------------'+ '\n')
-								stdout_fileno.write('---------------------------------------------'+ '\n')
-								
-								sys.stdout.write(tod.strftime("%Y %B %d")+ '\n')
-								stdout_fileno.write(tod.strftime("%Y %B %d")+ '\n')
-								
-								sys.stdout.write(serie+ '\n')
-								stdout_fileno.write(serie+ '\n')
+								sys.stdout.write('---------------------------------------------' + '\n')
+								stdout_fileno.write('---------------------------------------------' + '\n')
+								sys.stdout.write(tod.strftime("%Y %B %d") + '\n')
+								stdout_fileno.write(tod.strftime("%Y %B %d") + '\n')
+								sys.stdout.write(serie + '\n')
+								stdout_fileno.write(serie + '\n')
 							if ifepz:
 								ifepz = False
-								sys.stdout.write(f"***** {sez} {epz} {epzpav} *****"+ '\n')
-								stdout_fileno.write(f"***** {sez} {epz} {epzpav} *****"+ '\n')
-							sys.stdout.write(f'     {sal} {dt}'+ '\n')
-							stdout_fileno.write(f'     {sal} {dt}'+ '\n')
+								sys.stdout.write(f"***** {sez} {epz} {epzpav} *****" + '\n')
+								stdout_fileno.write(f"***** {sez} {epz} {epzpav} *****" + '\n')
+							sys.stdout.write(f'     {sal} {dt}' + '\n')
+							stdout_fileno.write(f'     {sal} {dt}' + '\n')
 					if ifkaz:
-						sys.stdout.write('---------------------------------------------'+ '\n')
-						stdout_fileno.write('---------------------------------------------'+ '\n')
+						sys.stdout.write('---------------------------------------------' + '\n')
+						stdout_fileno.write('---------------------------------------------' + '\n')
 	# Close the file
 	sys.stdout.close()
 	# Restore sys.stdout to our old saved file handler
