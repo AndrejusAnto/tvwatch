@@ -342,70 +342,28 @@ def atvaizdavimas(d):
 		if (len(ll) == 1) or (ll[0] != ll[1]):
 			sys.stdout.write(lines + '\n')
 			stdout_fileno.write(lines + '\n')
+
 			sys.stdout.write(serie + '\n')
 			stdout_fileno.write(serie + '\n')
+
 			sys.stdout.write(f"***** {sez} {epz} {epzname} *****\n")
 			stdout_fileno.write(f"***** {sez} {epz} {epzname} *****\n")
 			for sal, dat in d.items():
-				sys.stdout.write(f'      {sal} {convert_dates(dat)}\n')
-				stdout_fileno.write(f'      {sal} {dat}\n')
+				ndat = convert_dates(dat)
+				sys.stdout.write(f'      {sal} {ndat}\n')
+				stdout_fileno.write(f'      {sal} {ndat}\n')
 			if ifpop == "true":
 				ll.pop(0)
-
 		else:
 			sys.stdout.write(f"***** {sez} {epz} {epzname} *****\n")
 			stdout_fileno.write(f"***** {sez} {epz} {epzname} *****\n")
 			for sal, dat in d.items():
-				sys.stdout.write(f'      {sal} {convert_dates(dat)}\n')
-				stdout_fileno.write(f'      {sal} {dat}\n')
+				ndat = convert_dates(dat)
+				sys.stdout.write(f'      {sal} {ndat}\n')
+				stdout_fileno.write(f'      {sal} {ndat}\n')
 			ll.pop(0)
 	sys.stdout.write("-" * max_v + "\n")
 	stdout_fileno.write("-" * max_v + "\n")
-
-	# ifprin = True
-	# for serie, info in d.items():
-	# 	if ifprin:
-	# 		ifprin = False
-	# 		sys.stdout.write('---------------------------------------------' + '\n')
-	# 		stdout_fileno.write('---------------------------------------------' + '\n')
-	# 	ifprint = True
-	# 	laikepz = {}
-	# 	laiksez = {}
-	# 	for sez, sezi in info.items():
-	# 		for epz, epzi in sezi.items():
-	# 			laikepzn = {}
-	# 			for epzpav, epzd in epzi.items():
-	# 				laikdate = {}
-	# 				ifepz = True
-	# 				ifkaz = False
-	# 				for sal, dt in epzd.items():
-	# 					ndt = convert_dates(dt)
-	# 					if (len(ndt) == 3) and ndt >= listtod:
-	# 						laikdate.update({sal: dt})
-	# 						ifkaz = True
-	# 						if ifprint:
-	# 							ifprint = False
-	# 							sys.stdout.write('---------------------------------------------' + '\n')
-	# 							stdout_fileno.write('---------------------------------------------' + '\n')
-	# 							sys.stdout.write(tod.strftime("%Y %B %d") + '\n')
-	# 							stdout_fileno.write(tod.strftime("%Y %B %d") + '\n')
-	# 							sys.stdout.write(serie + '\n')
-	# 							stdout_fileno.write(serie + '\n')
-	# 						if ifepz:
-	# 							ifepz = False
-	# 							sys.stdout.write(f'***** {sez} {epz} {epzpav} *****' + '\n')
-	# 							stdout_fileno.write(f'***** {sez} {epz} {epzpav} *****' + '\n')
-	# 						sys.stdout.write(f'     {sal} {dt}' + '\n')
-	# 						stdout_fileno.write(f'     {sal} {dt}' + '\n')
-	# 						laikdate.update({sal: dt})
-	# 						laikepzn.update({epzpav: laikdate})
-	# 						laikepz.update({epz: laikepzn})
-	# 						laiksez.update({sez: laikepz})
-	# 						dictser.update({serie: laiksez})
-
-	# 				if ifkaz:
-	# 					sys.stdout.write('---------------------------------------------' + '\n')
-	# 					stdout_fileno.write('---------------------------------------------' + '\n')
 
 	# Close the file
 	sys.stdout.close()
