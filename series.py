@@ -83,6 +83,7 @@ watchseries = [
 	"The Umbrella Academy",
 	"Altered Carbon",
 	"Curb Your Enthusiasm",
+	"His Dark Materials",
 ]
 
 dictseries = {}
