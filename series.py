@@ -84,6 +84,7 @@ watchseries = [
 	"Altered Carbon",
 	"Curb Your Enthusiasm",
 	"His Dark Materials",
+	"WandaVision,
 ]
 
 dictseries = {}
@@ -144,7 +145,7 @@ def collect_series(tv, d):
 				seriesid = serie.movieID
 				serieinfo = ia.get_movie(seriesid)
 				serieyear = serieinfo["series years"]
-				if serieinfo['kind'] == 'tv series' and tv == serieinfo['title']:
+				if ("tv" and "series") in serieinfo['kind'] and tv == serieinfo['title']:
 					ifserie = False
 					pavad = f'{serieinfo["title"]} | {serieyear} | ID{seriesid}'
 					print(pavad)
