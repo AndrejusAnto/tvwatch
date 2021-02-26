@@ -87,6 +87,7 @@ watchseries = [
 	"WandaVision",
 	"Warrior",
 	"Avenue 5",
+	"Superman and Lois",
 ]
 
 dictseries = {}
